@@ -1,0 +1,13 @@
+._input {
+    outline: none;
+    border: 1px solid #fff;
+    padding: 0 10px;
+    border-radius: 5px;
+    background: #333;
+    color: #fff;
+}
+
+._border_box {
+    margin: 0;
+    padding: 0;
+}

@@ -1,0 +1,9 @@
+._alert {
+	border: 1px solid;
+	padding: 1em;
+}
+
+._alert__error {
+	color: #ce0d0d;
+	border: 1px solid darkred;
+}
