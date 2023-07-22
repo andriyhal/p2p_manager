@@ -4,6 +4,6 @@ const runOnWindowLoad = (fn) => {
     } else {
         window.addEventListener('load', () => fn());
     }
-}
+};
 
 export default runOnWindowLoad;

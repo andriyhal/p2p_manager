@@ -1,12 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-const TextInput = ({ label, name }) => {
-    const {
-        register,
-        formState: { errors }
-    } = useForm();
-
+const TextInput = ({ label, name, register, errors }) => {
     return (
         <div>
             <label htmlFor={name}>{label}:</label>

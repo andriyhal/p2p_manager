@@ -1,7 +1,9 @@
 class LocalStorageManager {
     constructor(key) {
         if (typeof key !== 'string' && key.length === 0) {
-            throw new Error('Incorrect key! Key must be string with length > 0');
+            throw new Error(
+                'Incorrect key! Key must be string with length > 0'
+            );
         }
 
         this.key = key;

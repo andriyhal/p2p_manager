@@ -3,7 +3,7 @@ import { WaitFor } from './wait-for';
 
 const URL = 'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search';
 
-export class BinanceP2PMonitor {
+export default class BinanceP2PMonitor {
     constructor(userName, fiat, tradeType, asset, price) {
         this.offset = 1;
         this.typeCoin = typeCoin;
@@ -20,16 +20,16 @@ export class BinanceP2PMonitor {
 
     async sendPostRequest(offset) {
         const postData = {
-        fiat: this.fiat,
-        page: offset,
-        rows: 10,
-        tradeType: this.tradeType,
-        asset: this.asset,
-        countries: [],
-        proMerchantAds: false,
-        shieldMerchantAds: false,
-        publisherType: null,
-        payTypes: []
+            fiat: this.fiat,
+            page: offset,
+            rows: 10,
+            tradeType: this.tradeType,
+            asset: this.asset,
+            countries: [],
+            proMerchantAds: false,
+            shieldMerchantAds: false,
+            publisherType: null,
+            payTypes: [],
         };
 
         const response = await axios.post(URL, postData);
@@ -43,7 +43,10 @@ export class BinanceP2PMonitor {
         response.data.filter((item, index) => {
             this.position++;
             if (item.advertiser.nickName === this.userName) {
-                console.log('class P2PTraderMonitor user position: ',item.advertiser.nickName + ' ' + this.position);
+                console.log(
+                    'class P2PTraderMonitor user position: ',
+                    item.advertiser.nickName + ' ' + this.position
+                );
             }
         });
 

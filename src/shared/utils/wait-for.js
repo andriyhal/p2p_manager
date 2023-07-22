@@ -6,13 +6,10 @@ export class WaitFor {
 
     #update(callback) {
         if (this.terminate) {
-            setTimeout(
-                () => {
-                    callback();
-                    this.#update(callback);
-                },
-                this.sleep
-            );
+            setTimeout(() => {
+                callback();
+                this.#update(callback);
+            }, this.sleep);
         }
     }
 
