@@ -2,6 +2,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const Dotenv = require('dotenv-webpack');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     mode: 'development',
@@ -55,6 +56,34 @@ module.exports = {
     plugins: [
         new MiniCssExtractPlugin({
             filename: 'app.css'
+        }),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: 'src/resources/p2p.png',
+                    to: path.join(__dirname, 'dist'),
+                    force: true,
+                },
+            ],
+        }),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: 'manifest.json',
+                    to: path.join(__dirname, 'dist'),
+                    force: true,
+                    transform: function (content, path) {
+                        // generates the manifest file using the package.json informations
+                        return Buffer.from(
+                            JSON.stringify({
+                                description: process.env.npm_package_description,
+                                version: process.env.npm_package_version,
+                                ...JSON.parse(content.toString()),
+                            })
+                        );
+                    },
+                },
+            ],
         }),
         new Dotenv(),
         new NodePolyfillPlugin()

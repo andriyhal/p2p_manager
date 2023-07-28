@@ -8,6 +8,7 @@ import P2pTracker from '../features/P2pTracker';
 // document.location.href = https://p2p.binance.com/uk-UA/myads?type=normal&code=default
 
 const App = () => {
+    console.log("***=== Andrew this f**king app works!!!===***")
     const isLogin =
         document.location.origin === 'https://accounts.binance.com'
             ? true
