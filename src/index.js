@@ -9,6 +9,6 @@ runOnWindowLoad(() => {
 
     newElement.id = 'root';
     bodyElement.insertBefore(newElement, bodyElement.firstChild);
-
+    console.log('render');
     ReactDOM.render(<App />, document.getElementById('root'));
 });

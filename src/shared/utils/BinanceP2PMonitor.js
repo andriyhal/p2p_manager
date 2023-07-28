@@ -4,18 +4,15 @@ import { WaitFor } from './wait-for';
 const URL = 'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search';
 
 export default class BinanceP2PMonitor {
-    constructor(userName, fiat, tradeType, asset, price) {
-        this.offset = 1;
-        this.typeCoin = typeCoin;
-        this.side = side;
-        this.userName = userName;
-        this.waitFor = new WaitFor(2000);
+    constructor(nickName, fiat, tradeType, asset) {
+        this.nickName = nickName;
         this.fiat = fiat;
         this.tradeType = tradeType;
         this.asset = asset;
-        this.price = price;
+        this.offset = 1;
         this.position = 0;
         this.traders = [];
+        this.waitFor = new WaitFor(2000);
     }
 
     async sendPostRequest(offset) {
@@ -42,7 +39,7 @@ export default class BinanceP2PMonitor {
 
         response.data.filter((item, index) => {
             this.position++;
-            if (item.advertiser.nickName === this.userName) {
+            if (item.advertiser.nickName === this.nickName) {
                 console.log(
                     'class P2PTraderMonitor user position: ',
                     item.advertiser.nickName + ' ' + this.position

@@ -20,17 +20,17 @@ const Modal = ({ isOpen, onClose, onAddTask }) => {
             <div className="modal_content">
                 <h2>Добавить элемент</h2>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    {/* <TextInput
+                    <TextInput
                         label="Nickname: "
-                        name="userName"
+                        name="nickName"
                         register={register}
                         errors={errors}
-                    /> */}
-                    <input
-                        id="userName"
-                        type="text"
-                        {...register('userName')}
                     />
+                    {/* <input
+                        id="nickName"
+                        type="text"
+                        {...register('nickName')}
+                    /> */}
                     <TextInput
                         label="Fiat: "
                         name="fiat"
@@ -44,8 +44,8 @@ const Modal = ({ isOpen, onClose, onAddTask }) => {
                         errors={errors}
                     />
                     <TextInput
-                        label="Price: "
-                        name="price"
+                        label="Trade type: "
+                        name="tradeType"
                         register={register}
                         errors={errors}
                     />
