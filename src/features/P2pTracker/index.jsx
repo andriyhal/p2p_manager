@@ -10,19 +10,6 @@ import { p2p_tracker_container } from './p2p-tracker.module.css';
 
 const paramsLocalStorageKey = 'paramsP2PRequest';
 
-const defaultParams = {
-    fiat: 'UAH',
-    page: 1,
-    rows: 10,
-    tradeType: 'BUY',
-    asset: 'USDT',
-    countries: [],
-    proMerchantAds: false,
-    shieldMerchantAds: false,
-    publisherType: null,
-    payTypes: [],
-};
-
 const P2pTracker = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [tasks, setTasks] = useState([]);
