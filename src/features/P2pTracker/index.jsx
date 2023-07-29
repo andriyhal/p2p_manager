@@ -6,7 +6,7 @@ import Modal from '../../features/Modal';
 import BinanceP2PMonitor from '../../shared/utils/BinanceP2PMonitor';
 import LocalStorageManager from '../../shared/utils/local-storage-manager';
 
-import { p2p_tracker_container } from './p2p-tracker.module.css';
+// import { p2p_tracker_container } from './p2p-tracker.module.css';
 
 const paramsLocalStorageKey = 'paramsP2PRequest';
 
@@ -88,7 +88,7 @@ const P2pTracker = () => {
     };
 
     return (
-        <div className={p2p_tracker_container}>
+        <div className={"p2p_tracker_container"}>
             <P2PTaskList tasks={tasks} onDelete={handleDelete} />
             <Button label="Добавить" onClick={openModal} />
             {isModalOpen && (

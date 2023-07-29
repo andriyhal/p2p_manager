@@ -1,14 +1,70 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
-import TextInput from '../../shared/ui/TextInput';
+import {useForm} from 'react-hook-form';
+import {styled} from "@mui/system";
+import {Button} from "@mui/material";
 
-const Modal = ({ isOpen, onClose, onAddTask }) => {
+import {FormInputDropdown} from "./dropdown";
+import {FormInputText} from "./input";
+
+const FIAT_OPTIONS = [
+    {
+        label: "UAH",
+        value: "uah",
+    }
+];
+
+const TRADE_TYPES_OPTIONS = [
+    {
+        label: "Sell",
+        value: "sell",
+    },
+    {
+        label: "Buy",
+        value: "buy",
+    }
+];
+
+const ASSET_OPTIONS = [
+    {
+        label: "USDT",
+        value: "usdt",
+    },
+    {
+        label: "BUSD",
+        value: "busd",
+    },
+    {
+        label: "BNB",
+        value: "bnb",
+    },
+    {
+        label: "ETH",
+        value: "eth",
+    }
+];
+
+const DEFAULT_VALUES = {
+    nickName: "",
+    fiat: "uah",
+    asset: "usdt",
+    tradeType: "sell",
+};
+
+const FormContainer = styled("form")({
+    display: "flex",
+    gap: "15px"
+})
+
+const ButtonContainer = styled(Button)({
+    minWidth: "120px"
+})
+
+const Modal = ({isOpen, onClose, onAddTask}) => {
     const {
-        register,
+        control,
         handleSubmit,
-        formState: { errors },
         reset,
-    } = useForm();
+    } = useForm({defaultValues: DEFAULT_VALUES});
 
     const onSubmit = (data) => {
         onAddTask(data);
@@ -19,41 +75,35 @@ const Modal = ({ isOpen, onClose, onAddTask }) => {
         <div className={`modal ${isOpen ? 'open' : ''}`}>
             <div className="modal_content">
                 <h2>Добавить элемент</h2>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <TextInput
+                <FormContainer onSubmit={handleSubmit(onSubmit)}>
+                    <FormInputText
                         label="Nickname: "
                         name="nickName"
-                        register={register}
-                        errors={errors}
+                        control={control}
                     />
-                    {/* <input
-                        id="nickName"
-                        type="text"
-                        {...register('nickName')}
-                    /> */}
-                    <TextInput
-                        label="Fiat: "
-                        name="fiat"
-                        register={register}
-                        errors={errors}
+                    <FormInputDropdown
+                        name={"fiat"}
+                        control={control}
+                        label={"Fiat: "}
+                        options={FIAT_OPTIONS}
                     />
-                    <TextInput
-                        label="Asset: "
-                        name="asset"
-                        register={register}
-                        errors={errors}
+                    <FormInputDropdown
+                        name={"asset"}
+                        control={control}
+                        label={"Asset: "}
+                        options={ASSET_OPTIONS}
                     />
-                    <TextInput
-                        label="Trade type: "
-                        name="tradeType"
-                        register={register}
-                        errors={errors}
+                    <FormInputDropdown
+                        name={"tradeType"}
+                        control={control}
+                        label={"Trade type: "}
+                        options={TRADE_TYPES_OPTIONS}
                     />
-                    <button type="submit">Добавить</button>
-                    <button type="button" onClick={onClose}>
+                    <ButtonContainer variant="contained" type="submit">Добавить</ButtonContainer>
+                    <ButtonContainer variant="contained" type="button" onClick={onClose}>
                         Закрыть
-                    </button>
-                </form>
+                    </ButtonContainer>
+                </FormContainer>
             </div>
         </div>
     );
