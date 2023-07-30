@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {createRoot} from 'react-dom/client';
 import App from './App';
 import runOnWindowLoad from './shared/utils/run-on-window-load';
 
@@ -10,12 +10,10 @@ runOnWindowLoad(() => {
     newElement.id = 'root';
     bodyElement.insertBefore(newElement, bodyElement.firstChild);
     console.log('render');
-    ReactDOM.render(<App />, document.getElementById('root'));
+    const root = createRoot(document.getElementById('root'));
+    root.render(
+        <React.StrictMode>
+            <App/>
+        </React.StrictMode>
+    );
 });
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>
-);

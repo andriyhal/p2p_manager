@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import BinanceP2PMonitor from '../../shared/utils/BinanceP2PMonitor';
+import React from 'react';
 
-const P2PTaskList = ({ tasks, onDelete }) => {
+export const P2PTasks = ({tasks, onDelete}) => {
     return (
         <div>
             {tasks.map((task, index) => (
@@ -15,5 +14,3 @@ const P2PTaskList = ({ tasks, onDelete }) => {
         </div>
     );
 };
-
-export default P2PTaskList;

@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import P2PTaskList from '../P2PTaskList';
-import Button from '../../shared/ui/Button';
-import Modal from '../../features/Modal';
+import React, {useState} from 'react';
+import {P2PTasks} from '../p2p_tasks';
+import {P2PTrackerForm} from '../p2p_tracker_form';
 
-import BinanceP2PMonitor from '../../shared/utils/BinanceP2PMonitor';
-import LocalStorageManager from '../../shared/utils/local-storage-manager';
+import BinanceP2PMonitor from '../shared/utils/BinanceP2PMonitor';
+import LocalStorageManager from '../shared/utils/local-storage-manager';
 
 // import { p2p_tracker_container } from './p2p-tracker.module.css';
 
 const paramsLocalStorageKey = 'paramsP2PRequest';
 
-const P2pTracker = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+export const P2PTracker = () => {
     const [tasks, setTasks] = useState([]);
     const localStorageManager = new LocalStorageManager(paramsLocalStorageKey);
 
@@ -46,14 +44,6 @@ const P2pTracker = () => {
         setTasks((prevTasks) => [...prevTasks, binanceMonitor]);
     };
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
-
     const handleDelete = (index) => {
         setTasks((prevTasks) => {
             const taskToRemove = prevTasks[index];
@@ -76,17 +66,10 @@ const P2pTracker = () => {
 
     return (
         <div className={"p2p_tracker_container"}>
-            <P2PTaskList tasks={tasks} onDelete={handleDelete} />
-            <Button label="Добавить" onClick={openModal} />
-            {isModalOpen && (
-                <Modal
-                    isOpen={isModalOpen}
-                    onClose={closeModal}
-                    onAddTask={handleAddTaskAndParams}
-                />
-            )}
+            <P2PTrackerForm
+                onAddTask={handleAddTaskAndParams}
+            />
+            <P2PTasks tasks={tasks} onDelete={handleDelete}/>
         </div>
     );
 };
-
-export default P2pTracker;
