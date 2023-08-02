@@ -29,7 +29,6 @@ function waitForElement(selector) {
     });
 }
 
-// Функция для мониторинга появления всех необходимых элементов на странице
 function monitorElementsOnPage() {
     return Promise.all([
         waitForElement('#c2c_advDetail_trading_amount input'),
