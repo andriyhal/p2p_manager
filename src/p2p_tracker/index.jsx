@@ -1,5 +1,5 @@
 import React from 'react';
-import P2PTaskList from '../P2PTaskList';
+import P2PTaskList from './P2PTaskList';
 import Button from '../../shared/ui/Button';
 import Modal from '../../features/Modal';
 import useP2PMonitor from './useP2PMonitor';
