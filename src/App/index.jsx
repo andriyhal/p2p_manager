@@ -1,6 +1,6 @@
 import React from 'react';
-import { styled } from '@mui/system';
-import P2pTracker from '../features/P2pTracker';
+import {styled} from '@mui/system';
+import {P2PTracker} from '../p2p_tracker';
 
 const AppContainer = styled('div')({
     display: "grid",
@@ -10,7 +10,7 @@ const AppContainer = styled('div')({
     left: "100px",
     padding: "10px",
     zIndex: "1000",
-    color:" #fff",
+    color: " #fff",
     background: "#333"
 });
 
@@ -23,8 +23,10 @@ const App = () => {
     const isLogin =
         document.location.origin === 'https://accounts.binance.com';
 
+    console.log("777")
+
     return (
-        <AppContainer>{isLogin ? <P2pTracker /> : <P2pTracker />}</AppContainer>
+        <AppContainer>{isLogin ? <P2PTracker/> : <P2PTracker/>}</AppContainer>
     );
 };
 
