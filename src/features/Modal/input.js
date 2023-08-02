@@ -1,14 +1,12 @@
-import {TextField} from "@mui/material";
-import {Controller} from "react-hook-form";
+import { TextField } from '@mui/material';
+import React from 'react';
+import { Controller } from 'react-hook-form';
 
-export const FormInputText = ({name, control, label}) => (
+export const FormInputText = ({ name, control, label }) => (
     <Controller
         name={name}
         control={control}
-        render={({
-                     field: {onChange, value},
-                     fieldState: {error}
-                 }) => (
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
             <TextField
                 helperText={error ? error.message : null}
                 size="small"
@@ -21,4 +19,4 @@ export const FormInputText = ({name, control, label}) => (
             />
         )}
     />
-)
+);

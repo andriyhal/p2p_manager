@@ -1,6 +1,7 @@
-import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
-import {Controller} from "react-hook-form";
-import {styled} from "@mui/system";
+import React from 'react';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { Controller } from 'react-hook-form';
+import { styled } from '@mui/system';
 
 const generateSingleOptions = (options) => {
     return options.map((option) => {
@@ -13,19 +14,14 @@ const generateSingleOptions = (options) => {
 };
 
 const FormControlContainer = styled(FormControl)({
-    minWidth: "100px",
-})
+    minWidth: '100px',
+});
 
-export const FormInputDropdown = ({
-                                      name,
-                                      control,
-                                      label,
-                                      options
-                                  }) => (
-    <FormControlContainer size={"small"}>
+export const FormInputDropdown = ({ name, control, label, options }) => (
+    <FormControlContainer size={'small'}>
         <InputLabel>{label}</InputLabel>
         <Controller
-            render={({field: {onChange, value}}) => (
+            render={({ field: { onChange, value } }) => (
                 <Select onChange={onChange} value={value}>
                     {generateSingleOptions(options)}
                 </Select>
@@ -34,4 +30,4 @@ export const FormInputDropdown = ({
             name={name}
         />
     </FormControlContainer>
-)
+);

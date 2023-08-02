@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import BinanceP2PMonitor from '../../shared/utils/BinanceP2PMonitor';
+import React, { useState } from 'react';
 
 const P2PTaskList = ({ tasks, onDelete }) => {
     return (
