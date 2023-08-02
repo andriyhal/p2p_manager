@@ -23,8 +23,6 @@ const App = () => {
     const isLogin =
         document.location.origin === 'https://accounts.binance.com';
 
-    console.log("777")
-
     return (
         <AppContainer>{isLogin ? <P2PTracker/> : <P2PTracker/>}</AppContainer>
     );
