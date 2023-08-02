@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import BinanceP2PMonitor from '../utils/BinanceP2PMonitor';
 import LocalStorageManager from '../utils/local-storage-manager';
 
 const paramsLocalStorageKey = 'paramsP2PRequest';
 
 const useP2PMonitor = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [tasks, setTasks] = useState([]);
     const localStorageManager = new LocalStorageManager(paramsLocalStorageKey);
 
@@ -39,14 +38,6 @@ const useP2PMonitor = () => {
         setTasks((prevTasks) => [...prevTasks, binanceMonitor]);
     };
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
-
     const handleDelete = (index) => {
         setTasks((prevTasks) => {
             const taskToRemove = prevTasks[index];
@@ -68,10 +59,7 @@ const useP2PMonitor = () => {
     };
 
     return {
-        isModalOpen,
         tasks,
-        openModal,
-        closeModal,
         handleDelete,
         handleAddTaskAndParams,
     };
