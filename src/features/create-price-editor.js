@@ -1,15 +1,10 @@
 import LocalStorageManager from "../shared/utils/local-storage-manager";
 import { WaitFor } from "../shared/utils/wait-for";
 
-const buttonSuffix = document.querySelectorAll(".bn-input-suffix")[0];
-const buttonPrefix = document.querySelectorAll(".bn-input-prefix")[0];
-const saveButton = document.querySelectorAll(
-  'button[data-bn-type="button"]'
-)[6];
+const C2C_P2PMYADSLIST_MANAGEMENT_BTN_EDIT =
+  "C2C_p2pMyAdsList_management_btn_edit";
 
-const publishButton = document.querySelectorAll(
-  'button[data-bn-type="button"]'
-)[8];
+const C2C_ADVDETAIL_TRADING_AMOUNT = "c2c_advDetail_trading_amount";
 
 const createPriceEditor = () => {
   const storageManager = new LocalStorageManager("priceData");
@@ -40,28 +35,30 @@ const createPriceEditor = () => {
 
     run: () => {
       const data = storageManager.readData();
-
       const currentPath = document.location.pathname;
-
       const waitfor = new WaitFor();
+
+      const editOrder = document.getElementById(
+        C2C_P2PMYADSLIST_MANAGEMENT_BTN_EDIT
+      );
+      const priceInputElement = document
+        .getElementById(C2C_ADVDETAIL_TRADING_AMOUNT)
+        .querySelector("input");
 
       if (data && data.editStatus && currentPath === "/en/myads") {
         console.log("Price on myads page:", parseFloat(data.price).toFixed(2));
-        document.getElementById("C2C_p2pMyAdsList_management_btn_edit").click();
+        editOrder.click();
       } else if (data && data.editStatus && currentPath === "/en/advEdit") {
         console.log(
           "Price on advEdit page:",
           parseFloat(data.price).toFixed(2)
         );
-        const priceInputElement = document
-          .getElementById("c2c_advDetail_trading_amount")
-          .querySelectorAll("input")[0];
 
-        let lastValue = priceInputElement.value;
+        const lastValue = priceInputElement.value;
         priceInputElement.value = data.price;
-        let event = new Event("input", { bubbles: true });
+        const event = new Event("input", { bubbles: true });
         event.simulated = true;
-        let tracker = priceInputElement._valueTracker;
+        const tracker = priceInputElement._valueTracker;
         if (tracker) {
           tracker.setValue(lastValue);
         }
