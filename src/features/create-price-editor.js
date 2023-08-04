@@ -41,9 +41,6 @@ const createPriceEditor = () => {
       const editOrder = document.getElementById(
         C2C_P2PMYADSLIST_MANAGEMENT_BTN_EDIT
       );
-      const priceInputElement = document
-        .getElementById(C2C_ADVDETAIL_TRADING_AMOUNT)
-        .querySelector("input");
 
       if (data && data.editStatus && currentPath === "/en/myads") {
         console.log("Price on myads page:", parseFloat(data.price).toFixed(2));
@@ -53,6 +50,10 @@ const createPriceEditor = () => {
           "Price on advEdit page:",
           parseFloat(data.price).toFixed(2)
         );
+
+        const priceInputElement = document
+          .getElementById(C2C_ADVDETAIL_TRADING_AMOUNT)
+          .querySelector("input");
 
         const lastValue = priceInputElement.value;
         priceInputElement.value = data.price;
