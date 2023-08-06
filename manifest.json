@@ -8,12 +8,14 @@
   "icons": {
     "128": "p2p.png"
   },
+  "permissions": [
+    "activeTab"
+  ],
   "content_scripts": [
     {
       "matches": [
-        "http://*/*",
-        "https://*/*",
-        "<all_urls>"
+        "https://www.binance.com/*",
+        "https://p2p.binance.com/*"
       ],
       "js": [
         "bundle.js"
