@@ -24,10 +24,29 @@ export const FormInputDropdown = ({
                                       options
                                   }) => (
     <FormControlContainer size={"small"}>
-        <InputLabel>{label}</InputLabel>
+        <InputLabel
+            sx={{
+                transition: "color 200ms",
+                color: "#f9f9f9",
+            }}
+        >{label}</InputLabel>
         <Controller
             render={({field: {onChange, value}}) => (
-                <Select onChange={onChange} value={value}>
+                <Select onChange={onChange} value={value}
+                        label={label}
+                        sx={{
+                            transition: "color, border-color, background 200ms",
+                            color: "#f9f9f9",
+                            "& .MuiSelect-icon": {
+                                color: "#f9f9f9",
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#f9f9f9",
+                            },
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#1976D2",
+                            },
+                        }}>
                     {generateSingleOptions(options)}
                 </Select>
             )}
