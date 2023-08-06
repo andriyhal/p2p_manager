@@ -24,7 +24,7 @@ const App = () => {
   const isLogin = document.location.origin === "https://accounts.binance.com";
 
   const orderEdit = createPriceEditor();
-  orderEdit.editPrice(37.95);
+  orderEdit.editPrice(38.48);
   orderEdit.run();
 
   return (

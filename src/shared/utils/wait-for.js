@@ -1,24 +1,24 @@
 export class WaitFor {
-    constructor(sleep) {
-        this.sleep = sleep;
-        this.terminate = false;
-    }
+  constructor(sleep) {
+    this.sleep = sleep;
+    this.terminate = false;
+  }
 
-    #update(callback) {
-        if (this.terminate) {
-            setTimeout(() => {
-                callback();
-                this.#update(callback);
-            }, this.sleep);
-        }
-    }
+  start(callback) {
+    const update = () => {
+      if (this.terminate) {
+        setTimeout(() => {
+          callback();
+          update();
+        }, this.sleep);
+      }
+    };
 
-    start(callback) {
-        this.terminate = true;
-        this.#update(callback);
-    }
+    this.terminate = true;
+    update();
+  }
 
-    stop() {
-        this.terminate = false;
-    }
+  stop() {
+    this.terminate = false;
+  }
 }
