@@ -54,18 +54,6 @@ module.exports = {
         ]
     },
     plugins: [
-        // new MiniCssExtractPlugin({
-        //     filename: 'app.css'
-        // }),
-        new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: 'src/resources/p2p.png',
-                    to: path.join(__dirname, 'dist'),
-                    force: true,
-                },
-            ],
-        }),
         new CopyWebpackPlugin({
             patterns: [
                 {
@@ -82,6 +70,11 @@ module.exports = {
                             })
                         );
                     },
+                },
+                {
+                    from: 'src/resources/p2p.png',
+                    to: path.join(__dirname, 'dist'),
+                    force: true,
                 },
             ],
         }),
