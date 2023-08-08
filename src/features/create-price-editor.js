@@ -13,7 +13,23 @@ const editOrder = (data) => {
   console.log("Price on myads page:", parseFloat(data.price).toFixed(2));
 };
 
-const postOrder = () => {};
+const postOrder = () => {
+  const waitfor = new WaitFor(3000);
+  const selector = 'button[data-bn-type="button"]';
+  const buttons = [6, 8, 7];
+  let indexButton = 0;
+
+  waitfor.start(() => {
+    if (document.querySelectorAll(selector)[buttons[indexButton]]) {
+      if (buttons[indexButton] && waitfor.terminate) {
+        console.log(document.querySelectorAll(selector)[buttons[indexButton]]);
+        indexButton++;
+      } else {
+        waitfor.stop();
+      }
+    }
+  });
+};
 
 const createPriceEditor = () => {
   const storageManager = new LocalStorageManager("priceData");
@@ -45,16 +61,10 @@ const createPriceEditor = () => {
     run: () => {
       const data = storageManager.readData();
       const currentPath = document.location.pathname;
-      const waitfor = new WaitFor(3000);
 
       if (data && data.editStatus && currentPath === "/en/myads") {
         editOrder(data);
       } else if (data && data.editStatus && currentPath === "/en/advEdit") {
-        console.log(
-          "Price on advEdit page:",
-          parseFloat(data.price).toFixed(2)
-        );
-
         const priceInputElement = document
           .getElementById(C2C_ADVDETAIL_TRADING_AMOUNT)
           .querySelector("input");
@@ -72,30 +82,7 @@ const createPriceEditor = () => {
         data.editStatus = false;
         storageManager.saveData(data);
 
-        waitfor.start(() => {
-          if (document.querySelectorAll('button[data-bn-type="button"]')[6]) {
-            document
-              .querySelectorAll('button[data-bn-type="button"]')[6]
-              .click();
-          }
-        });
-
-        waitfor.start(() => {
-          if (document.querySelectorAll('button[data-bn-type="button"]')[8]) {
-            document
-              .querySelectorAll('button[data-bn-type="button"]')[8]
-              .click();
-          }
-        });
-
-        waitfor.start(() => {
-          if (document.querySelectorAll('button[data-bn-type="button"]')[7]) {
-            document
-              .querySelectorAll('button[data-bn-type="button"]')[7]
-              .click();
-            waitfor.stop();
-          }
-        });
+        postOrder();
       } else {
         console.log(
           "No actions to perform on this page or edit status is false."

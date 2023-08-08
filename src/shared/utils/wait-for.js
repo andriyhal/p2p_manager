@@ -1,16 +1,15 @@
 export class WaitFor {
   constructor(sleep) {
     this.sleep = sleep;
+    this.timerId = null;
     this.terminate = false;
   }
 
   start(callback) {
     const update = () => {
       if (this.terminate) {
-        setTimeout(() => {
-          callback();
-          update();
-        }, this.sleep);
+        callback();
+        this.timerId = setTimeout(update, this.sleep);
       }
     };
 
@@ -20,5 +19,8 @@ export class WaitFor {
 
   stop() {
     this.terminate = false;
+    if (this.timerId !== null) {
+      clearTimeout(this.timerId);
+    }
   }
 }
