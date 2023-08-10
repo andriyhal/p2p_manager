@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { styled } from "@mui/system";
 import { P2PTracker } from "../p2p_tracker";
 import createPriceEditor from "../features/create-price-editor";
@@ -23,9 +23,11 @@ const AppContainer = styled("div")({
 const App = () => {
   const isLogin = document.location.origin === "https://accounts.binance.com";
 
-  const orderEdit = createPriceEditor();
-  orderEdit.editPrice(38.48);
-  orderEdit.run();
+  useEffect(() => {
+    const orderEdit = createPriceEditor();
+    orderEdit.editPrice(38.45);
+    orderEdit.run();
+  }, []);
 
   return (
     <AppContainer>{isLogin ? <P2PTracker /> : <P2PTracker />}</AppContainer>

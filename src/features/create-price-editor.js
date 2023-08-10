@@ -7,6 +7,11 @@ const C2C_P2PMYADSLIST_MANAGEMENT_BTN_EDIT =
 
 const C2C_ADVDETAIL_TRADING_AMOUNT = "c2c_advDetail_trading_amount";
 
+const editElements = () =>
+  document.querySelectorAll('input[data-bn-type="input"]');
+const buttonElements = () =>
+  document.querySelectorAll('button[data-bn-type="button"]');
+
 const editOrder = (data) => {
   document.getElementById(C2C_P2PMYADSLIST_MANAGEMENT_BTN_EDIT).click();
 
@@ -16,18 +21,24 @@ const editOrder = (data) => {
 const postOrder = () => {
   const waitfor = new WaitFor(3000);
   const selector = 'button[data-bn-type="button"]';
-  const buttons = [6, 8, 7];
-  let indexButton = 0;
 
   waitfor.start(() => {
-    if (document.querySelectorAll(selector)[buttons[indexButton]]) {
-      if (buttons[indexButton] && waitfor.terminate) {
-        console.log(document.querySelectorAll(selector)[buttons[indexButton]]);
-        indexButton++;
-      } else {
-        waitfor.stop();
-      }
+    if (document.querySelectorAll(selector).length === 7) {
+      document.querySelectorAll(selector)[6].click();
+      console.log("waitFor 1 click");
     }
+
+    if (document.querySelectorAll(selector).length === 9) {
+      document.querySelectorAll(selector)[8].click();
+      console.log("waitFor 2 click");
+    }
+
+    if (document.querySelectorAll(selector).length === 8) {
+      document.querySelectorAll(selector)[7].click();
+      console.log("waitFor stop");
+      waitfor.stop();
+    }
+    console.log("waitFor is running");
   });
 };
 
