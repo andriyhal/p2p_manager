@@ -42,7 +42,8 @@ export default class BinanceP2PMonitor {
 			if (item.advertiser.nickName === this.nickName) {
 				console.log(
 					'class P2PTraderMonitor user position: ',
-					item.advertiser.nickName + ' ' + this.position
+					item.advertiser.nickName + ' ' + this.position,
+					'response: ' + item
 				);
 			}
 		});
