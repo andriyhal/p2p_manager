@@ -20,17 +20,17 @@ export const FormInputText = ({name, control, label}) => (
                     transition: "color, border-color, background 200ms",
                     "& .MuiOutlinedInput-root": {
                         "& fieldset": {
-                            borderColor: "#f9f9f9",
+                            borderColor: "#1976D2",
                         },
                         "&:hover fieldset": {
                             borderColor: "#1976D2",
                         },
                     },
                     "& .MuiInputLabel-root": {
-                        color: "#f9f9f9",
+                        color: "#1976D2",
                     },
                     "& .MuiOutlinedInput-input": {
-                        color: "#f9f9f9",
+                        color: "#1976D2",
                         minWidth: "70px"
                     },
                 }}

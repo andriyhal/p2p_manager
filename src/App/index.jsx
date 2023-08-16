@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { styled } from "@mui/system";
 import { P2PTracker } from "../p2p_tracker";
-import createPriceEditor from "../features/create-price-editor";
+import { saveOrderIdsToLocaleStorage } from "../features/save_order_ids_to_locale_storage";
+import { useAddCreateTaskForm } from "../features/use_add_create_task_form";
 
 const AppContainer = styled("div")({
   display: "grid",
@@ -15,22 +16,14 @@ const AppContainer = styled("div")({
   background: "#333",
 });
 
-// create order buy/sell nav url
-// document.location.href = https://p2p.binance.com/uk-UA/postAd
-// delete order nav url
-// document.location.href = https://p2p.binance.com/uk-UA/myads?type=normal&code=default
-
 const App = () => {
-  const isLogin = document.location.origin === "https://accounts.binance.com";
-
-  useEffect(() => {
-    const orderEdit = createPriceEditor();
-    orderEdit.editPrice(38.45);
-    orderEdit.run();
-  }, []);
+  // TODO: WIll implement isLogin logic
+  // const isLogin = document.location.origin === "https://accounts.binance.com";
+  useAddCreateTaskForm();
+  saveOrderIdsToLocaleStorage()
 
   return (
-    <AppContainer>{isLogin ? <P2PTracker /> : <P2PTracker />}</AppContainer>
+    <AppContainer><P2PTracker /></AppContainer>
   );
 };
 
