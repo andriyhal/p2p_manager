@@ -1,41 +1,40 @@
-import { useState } from "react";
-import BinanceP2PMonitor from "../utils/BinanceP2PMonitor";
+import { useEffect, useState } from "react";
+import BinanceP2PMonitor from "../utils/binance_p2p_monitor";
 import LocalStorageManager from "../utils/local-storage-manager";
 
-const paramsLocalStorageKey = "paramsP2PRequest";
-const localStorageManager = new LocalStorageManager(paramsLocalStorageKey);
 
-const useP2PMonitor = () => {
-  const [tasks, setTasks] = useState([]);
+const tasksInfo = new LocalStorageManager("tasksInfo");
+const ordersLocalStorage = new LocalStorageManager('orderInfo');
 
-  const storedParams = localStorageManager.readData();
-  if (!storedParams) {
-    localStorageManager.saveData([]);
-  }
+export const useP2PMonitor = () => {
+  const [tasks, setTasks] = useState(tasksInfo.readData() ? tasksInfo.readData() : []);
 
-  const createMonitorInstance = (param) => {
-    const binanceMonitor = new BinanceP2PMonitor(
-      param.nickName,
-      param.fiat,
-      param.tradeType,
-      param.asset
-    );
+  useEffect(() => {
+    tasks.map(task => {
 
-    try {
-      const prevParam = JSON.parse(localStorageManager.readData());
-      if (prevParam && prevParam.length) {
-        localStorageManager.saveData([...prevParam, param]);
+      const orders = ordersLocalStorage.readData();
+      const [order] = [...orders].filter(order => order.orderId === task.orderId);
+      
+      if (order) {
+        const binanceMonitor = new BinanceP2PMonitor(order, task.minPrice);
+        binanceMonitor.startMonitoring();
       }
-    } catch (error) {
-      console.log(
-        "localStorageManager.readData()",
-        localStorageManager.readData()
-      );
+    });
+    console.log('ffffffffffff');
+  }, [tasks]);
+
+  const createMonitorInstance = ({data, infoOrder}) => {
+    const binanceMonitor = new BinanceP2PMonitor(infoOrder, data.minPrice);
+      
+    if (tasksInfo.readData()) {
+      const [newTask] = tasksInfo.readData().filter(task => task.orderId === infoOrder.orderId);
+      tasksInfo.saveData([...tasksInfo.readData(), newTask.orderId, data.minPrice]);
+      return
     }
-
+      
+    tasksInfo.saveData([infoOrder.orderId, data.minPrice]);
     binanceMonitor.startMonitoring();
-
-    setTasks((prevTasks) => [...prevTasks, binanceMonitor]);
+    return
   };
 
   const handleDelete = (index) => {
@@ -45,8 +44,8 @@ const useP2PMonitor = () => {
         taskToRemove.monitor.stopMonitoring();
       }
 
-      const params = localStorageManager.readData();
-      localStorageManager.saveData(JSON.parse(params).splice(index, 1));
+      const params = taskIds.readData();
+      tasksInfo.saveData(JSON.parse(params).splice(index, 1));
 
       const updatedTasks = [...prevTasks];
       updatedTasks.splice(index, 1);
@@ -64,5 +63,3 @@ const useP2PMonitor = () => {
     handleAddTaskAndParams,
   };
 };
-
-export default useP2PMonitor;

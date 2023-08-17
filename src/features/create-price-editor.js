@@ -15,6 +15,7 @@ const postOrder = () => {
 
 		if (document.querySelectorAll(selector).length === 9) {
 			document.querySelectorAll(selector)[8].click();
+			waitfor.stop();
 		}
 
 		if (document.querySelectorAll(selector).length === 8) {
@@ -29,41 +30,21 @@ const createPriceEditor = () => {
 	const storageManager = new LocalStorageManager('priceData');
 
 	return {
-		editPrice: newPrice => {
-			const data = storageManager.readData();
-
-			if (data && !data.editStatus) {
-				const updatedData = {
-					price: newPrice,
-					editStatus: true
-				};
-				storageManager.saveData(updatedData);
-			} else {
-				const updatedData = {
-					price: newPrice,
-					editStatus: false
-				};
-				storageManager.saveData(updatedData);
-			}
+		updatePrice: (orderId, newPrice) => {
+			storageManager.saveData({orderId, newPrice});
 		},
 
 		run: () => {
 			const data = storageManager.readData();
-			const currentPath = document.location.pathname;
-
-			if (data && data.editStatus && currentPath === '/en/myads') {
-				document.getElementById(BTN_EDIT).click();
-			} else if (
-				data &&
-				data.editStatus &&
-				currentPath === '/en/advEdit'
-			) {
+			
+			if (data) {
+				document.location.href = 'https://p2p.binance.com/en/advEdit?code=' + data.orderId;
 				const priceInputElement = document
 					.getElementById(EDIT_PRICE)
 					.querySelector('input');
 
 				const lastValue = priceInputElement.value;
-				priceInputElement.value = data.price;
+				priceInputElement.value = data.newPrice;
 				const event = new Event('input', { bubbles: true });
 				event.simulated = true;
 				const tracker = priceInputElement._valueTracker;
@@ -71,11 +52,10 @@ const createPriceEditor = () => {
 					tracker.setValue(lastValue);
 				}
 				priceInputElement.dispatchEvent(event);
-
-				data.editStatus = false;
-				storageManager.saveData(data);
+				
 
 				postOrder();
+				storageManager.saveData(false);
 			} else {
 				console.log(
 					'No actions to perform on this page or edit status is false.'

@@ -1,8 +1,0 @@
-.p2p_tracker_container {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 16px;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 16px;
-}
