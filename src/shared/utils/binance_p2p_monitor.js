@@ -5,16 +5,20 @@ import LocalStorageManager from './local-storage-manager';
 
 const URL = 'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search';
 const localStorageManager = new LocalStorageManager('orderIds'); 
+const { updatePrice } = createPriceEditor();
 
 export default class BinanceP2PMonitor {
-	constructor(orderId, fiat, tradeType, asset, minPrice) {
+	constructor(orderInfo, minPrice) {
 		//parameter
-		this.fiat = fiat;
-		this.tradeType = tradeType;
-		this.asset = asset;
+		this.asset = orderInfo.quoteCurrency[0];
+		this.fiat = orderInfo.quoteCurrency[1];
+		this.tradeType = orderInfo.orderType;
+		this.payTypes = orderInfo.payTypes;
+		
 		//local
-		this.orderId = orderId;
+		this.orderId = orderInfo.orderId;
 		this.minPrice = minPrice;
+		this.currentPrice = orderInfo.price;
 		this.offset = 1;
 		this.position = 0;
 		this.traders = [];
@@ -30,7 +34,7 @@ export default class BinanceP2PMonitor {
 			tradeType: this.tradeType,
 			asset: this.asset,
 			countries: [],
-            payTypes: ["Monobank", "PUMBBank"],
+            payTypes: this.payTypes,
 			proMerchantAds: false,
 			shieldMerchantAds: false,
 			publisherType: null,
@@ -38,7 +42,7 @@ export default class BinanceP2PMonitor {
 		};
 		
 		const response = await axios.post(URL, postData);
-		console.log(response.data);
+		
 		return response.data;
 	}
 
@@ -46,27 +50,33 @@ export default class BinanceP2PMonitor {
 		const {data: orders} = await this.fetchTradersOrders(this.offset);
 		this.offset = orders.length > 0 ? this.offset + 1 : 0;
 
-		orders.map((item, index) => {
-			this.position++;
-			this.traders.push(item);
+		this.traders.push(...orders);
 
-			const order = localStorageManager.readData().filter(order => item.adv.advNo === order.orderId)
+		const [order] = orders.filter(order => order.adv.advNo === this.orderId);
+		
+		
 
-			if (order.orderType === 'SELL' && this.traders[0].adv.price > this.minPrice) {
-				this.editPrice = this.traders[0].adv.price - 0.01;
+		while (this.traders.length && order) {
+			const trader = this.traders.pop();
+
+			if (order.adv.tradeType === 'SELL' && order.adv.price > trader.adv.price && trader.adv.price > this.minPrice) {
+				this.editPrice = trader.adv.price - 0.1;
 			}
-			//https://p2p.binance.com/en/advEdit?code=<orderId>
-			if (order.orderType === 'BUY' && this.traders[0].adv.price < this.minPrice) {
-				this.editPrice = this.traders[0].adv.price + 0.01;
+
+			if (order.adv.tradeType === 'BUY' && order.adv.price < trader.adv.price && trader.adv.price < this.minPrice) {
+				this.editPrice = trader.adv.price + 0.1;
 			}
-				
-			
-		});
+		}	
+		
+		
+		if (document.location.pathname !== '/en/advEdit' && this.currentPrice !== this.editPrice) {
+			handleEditPrice()
+		}
 	}
 
 	handleEditPrice() {
 		const orderEdit = createPriceEditor();
-		orderEdit.editPrice(38.45);
+		orderEdit.updatePrice(this.editPrice);
 		orderEdit.run();
 	}
 

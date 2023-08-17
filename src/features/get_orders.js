@@ -1,29 +1,26 @@
 import { WaitFor } from '../shared/utils/wait-for';
 
-const getElements = () => document.querySelector('#c2c_batchOperation_checkbox_selectAll')
-    ?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement
-    .children[1].children[0].children[0].children[1].childNodes;
-
 export async function getOrders () {
     const waitFor = new WaitFor(100);
     let isLoaded = true;
-    
+    let orders = [];
 
-    waitFor.start(() => {
-      try {
-        const todoElement = getElements()?.[0]?.children[0]?.children;
-        if (todoElement?.length > 7) {
-            isLoaded = false;
+    const updateOrders = () =>{
+        const todoElement = document.querySelectorAll('input[type="checkbox"]');
+
+        orders = [...todoElement].filter(e => e.id === '').map(elem => elem.parentElement.parentElement.parentElement.parentElement)
+        
+        if (orders.length > 0) {
             waitFor.stop();
+            isLoaded = false;
         }
-      } catch (error) {
-        console.log(error);
-      }
-    });
+    }
+
+    waitFor.start(() => updateOrders());
  
     while (isLoaded) {
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
-
-    return getElements();
+    
+    return orders;
 }

@@ -6,7 +6,7 @@ import { getOrders } from './get_orders';
 
 export const useAddCreateTaskForm = () => {
     getOrders().then(orders => {
-        [...orders].map((order, index) => {
+        [...orders].forEach((order, index) => {
                
             const taskControlForm = document.createElement('div');
             order.appendChild(taskControlForm);

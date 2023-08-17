@@ -3,6 +3,7 @@ import { styled } from "@mui/system";
 import { P2PTracker } from "../p2p_tracker";
 import { saveOrderIdsToLocaleStorage } from "../features/save_order_ids_to_locale_storage";
 import { useAddCreateTaskForm } from "../features/use_add_create_task_form";
+import createPriceEditor from "../features/create-price-editor";
 
 const AppContainer = styled("div")({
   display: "grid",
@@ -16,11 +17,13 @@ const AppContainer = styled("div")({
   background: "#333",
 });
 
+const { run } = createPriceEditor();
+
 const App = () => {
   // TODO: WIll implement isLogin logic
   // const isLogin = document.location.origin === "https://accounts.binance.com";
   useAddCreateTaskForm();
-  saveOrderIdsToLocaleStorage()
+  saveOrderIdsToLocaleStorage();
 
   return (
     <AppContainer><P2PTracker /></AppContainer>
