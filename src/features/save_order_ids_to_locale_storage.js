@@ -1,4 +1,4 @@
-import LocalStorageManager from '../shared/utils/local-storage-manager';
+import LocalStorageManager from '../utils/local-storage-manager';
 import { getOrders } from './get_orders';
 
 const localStorageManager = new LocalStorageManager('orderInfo'); 

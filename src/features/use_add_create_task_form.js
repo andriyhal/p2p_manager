@@ -7,6 +7,12 @@ import { getOrders } from './get_orders';
 export const useAddCreateTaskForm = () => {
     getOrders().then(orders => {
         [...orders].forEach((order, index) => {
+
+            const hasId = !!document.getElementById(order.orderId);
+
+            if(hasId) {
+                return;
+            }
                
             const taskControlForm = document.createElement('div');
             order.appendChild(taskControlForm);

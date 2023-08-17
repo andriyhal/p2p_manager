@@ -1,4 +1,4 @@
-import { WaitFor } from '../shared/utils/wait-for';
+import { WaitFor } from '../utils/wait-for';
 
 export async function getOrders () {
     const waitFor = new WaitFor(100);

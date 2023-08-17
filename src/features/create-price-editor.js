@@ -1,5 +1,5 @@
-import LocalStorageManager from '../shared/utils/local-storage-manager';
-import { WaitFor } from '../shared/utils/wait-for';
+import LocalStorageManager from '../utils/local-storage-manager';
+import { WaitFor } from '../utils/wait-for';
 
 const BTN_EDIT = 'C2C_p2pMyAdsList_management_btn_edit';
 const EDIT_PRICE = 'c2c_advDetail_trading_amount';
@@ -32,30 +32,36 @@ const createPriceEditor = () => {
 	return {
 		updatePrice: (orderId, newPrice) => {
 			storageManager.saveData({orderId, newPrice});
+			document.location.href = 'https://p2p.binance.com/en/advEdit?code=' + orderId;
 		},
 
 		run: () => {
 			const data = storageManager.readData();
 			
+
+
+			
 			if (data) {
-				document.location.href = 'https://p2p.binance.com/en/advEdit?code=' + data.orderId;
-				const priceInputElement = document
+
+				setTimeout(() => {
+					const priceInputElement = document
 					.getElementById(EDIT_PRICE)
 					.querySelector('input');
 
-				const lastValue = priceInputElement.value;
-				priceInputElement.value = data.newPrice;
-				const event = new Event('input', { bubbles: true });
-				event.simulated = true;
-				const tracker = priceInputElement._valueTracker;
-				if (tracker) {
-					tracker.setValue(lastValue);
-				}
-				priceInputElement.dispatchEvent(event);
-				
+					const lastValue = priceInputElement.value;
+					priceInputElement.value = data.newPrice;
+					const event = new Event('input', { bubbles: true });
+					event.simulated = true;
+					const tracker = priceInputElement._valueTracker;
+					if (tracker) {
+						tracker.setValue(lastValue);
+					}
+					priceInputElement.dispatchEvent(event);
+					
 
-				postOrder();
-				storageManager.saveData(false);
+					postOrder();
+					storageManager.saveData(false);
+				}, 5000);
 			} else {
 				console.log(
 					'No actions to perform on this page or edit status is false.'

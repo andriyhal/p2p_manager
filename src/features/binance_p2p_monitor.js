@@ -1,14 +1,12 @@
 import axios from 'axios';
-import { WaitFor } from './wait-for';
-import createPriceEditor from "../../features/create-price-editor";
-import LocalStorageManager from './local-storage-manager';
+import { WaitFor } from '../utils/wait-for';
+import createPriceEditor from "./create-price-editor";
 
 const URL = 'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search';
-const localStorageManager = new LocalStorageManager('orderIds'); 
 const { updatePrice } = createPriceEditor();
 
 export default class BinanceP2PMonitor {
-	constructor(orderInfo, minPrice) {
+	constructor(orderInfo) {
 		//parameter
 		this.asset = orderInfo.quoteCurrency[0];
 		this.fiat = orderInfo.quoteCurrency[1];
@@ -17,8 +15,7 @@ export default class BinanceP2PMonitor {
 		
 		//local
 		this.orderId = orderInfo.orderId;
-		this.minPrice = minPrice;
-		this.currentPrice = orderInfo.price;
+		this.price = orderInfo.price;
 		this.offset = 1;
 		this.position = 0;
 		this.traders = [];
@@ -31,7 +28,7 @@ export default class BinanceP2PMonitor {
 			fiat: this.fiat,
 			page: offset,
 			rows: 10,
-			tradeType: this.tradeType,
+			tradeType: this.tradeType === 'SELL' ? 'BUY' : this.tradeType,
 			asset: this.asset,
 			countries: [],
             payTypes: this.payTypes,
@@ -48,29 +45,30 @@ export default class BinanceP2PMonitor {
 
 	async getOrdersFromNextPage() {
 		const {data: orders} = await this.fetchTradersOrders(this.offset);
-		this.offset = orders.length > 0 ? this.offset + 1 : 0;
-
+		this.offset = orders.length > 0 ? this.offset + 1 : 1;
+		
 		this.traders.push(...orders);
 
 		const [order] = orders.filter(order => order.adv.advNo === this.orderId);
 		
-		
-
 		while (this.traders.length && order) {
 			const trader = this.traders.pop();
 
-			if (order.adv.tradeType === 'SELL' && order.adv.price > trader.adv.price && trader.adv.price > this.minPrice) {
+			if (order.adv.tradeType === 'SELL' && order.adv.price > trader.adv.price && trader.adv.price > this.price) {
 				this.editPrice = trader.adv.price - 0.1;
 			}
 
-			if (order.adv.tradeType === 'BUY' && order.adv.price < trader.adv.price && trader.adv.price < this.minPrice) {
+			if (order.adv.tradeType === 'BUY' && order.adv.price < trader.adv.price && trader.adv.price < this.price) {
 				this.editPrice = trader.adv.price + 0.1;
 			}
+
 		}	
 		
 		
-		if (document.location.pathname !== '/en/advEdit' && this.currentPrice !== this.editPrice) {
-			handleEditPrice()
+		if (document.location.pathname !== '/en/advEdit' && this.editPrice > 0) {
+			console.log('next page');
+			updatePrice(this.orderId, this.editPrice);
+
 		}
 	}
 
