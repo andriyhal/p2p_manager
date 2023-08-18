@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { WaitFor } from '../utils/wait-for';
-import createPriceEditor from "./create-price-editor";
+import { nextToEditOrder } from "./create-price-editor";
+import { getCurrentPath } from '../dom-helpers';
 
 const URL = 'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search';
-const { updatePrice } = createPriceEditor();
 
 export default class BinanceP2PMonitor {
 	constructor(orderInfo) {
@@ -15,7 +15,7 @@ export default class BinanceP2PMonitor {
 		
 		//local
 		this.orderId = orderInfo.orderId;
-		this.price = orderInfo.price;
+		this.price = parseFloat(orderInfo.price);
 		this.offset = 1;
 		this.position = 0;
 		this.traders = [];
@@ -53,7 +53,7 @@ export default class BinanceP2PMonitor {
 		
 		while (this.traders.length && order) {
 			const trader = this.traders.pop();
-
+			
 			if (order.adv.tradeType === 'SELL' && order.adv.price > trader.adv.price && trader.adv.price > this.price) {
 				this.editPrice = trader.adv.price - 0.1;
 			}
@@ -65,17 +65,9 @@ export default class BinanceP2PMonitor {
 		}	
 		
 		
-		if (document.location.pathname !== '/en/advEdit' && this.editPrice > 0) {
-			console.log('next page');
-			updatePrice(this.orderId, this.editPrice);
-
+		if (getCurrentPath() !== 'advEdit' && this.editPrice > 0) {
+			nextToEditOrder(this.orderId, this.editPrice);
 		}
-	}
-
-	handleEditPrice() {
-		const orderEdit = createPriceEditor();
-		orderEdit.updatePrice(this.editPrice);
-		orderEdit.run();
 	}
 
 	startMonitoring() {

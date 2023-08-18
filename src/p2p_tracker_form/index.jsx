@@ -40,14 +40,16 @@ export const P2PTrackerForm = (infoOrder) => {
     const {control, handleSubmit} = useForm();
 
     const handleSaveTaskToLocalStorage = submitData => {
+        console.log('submitData', submitData);
         taskFilter({...submitData, ...infoOrder});
            
     }
 
-    const isTaskAlreadyExist = true;
-
-    const deleteTask = () => {
-        //TODO: remove task from local storage
+    const deleteTask = (id) => {
+        tasksInfo.saveData(
+            tasksInfo.readData()
+            .filter(task => task.orderId !== id)
+        );
     }
 
     return (
@@ -55,11 +57,9 @@ export const P2PTrackerForm = (infoOrder) => {
             <FormContainer onSubmit={handleSubmit(handleSaveTaskToLocalStorage)} id={infoOrder.orderId}>
                 <FormInputText label="price" name="price" control={control}/>
                 <ButtonContainer variant="contained" type="submit" >
-                    {isTaskAlreadyExist ? "Обновить"  : "Добавить"}
+                    Добавить
                 </ButtonContainer>
-                {isTaskAlreadyExist && <ButtonContainer variant="contained" onClick={deleteTask} >
-                     {"Удалить"}
-                </ButtonContainer>}
+        
             </FormContainer>
         </P2PTrackerFormContainer>
     );
