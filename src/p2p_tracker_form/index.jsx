@@ -40,9 +40,9 @@ export const P2PTrackerForm = (infoOrder) => {
     const {control, handleSubmit} = useForm();
 
     const handleSaveTaskToLocalStorage = submitData => {
-        console.log('submitData', submitData);
-        taskFilter({...submitData, ...infoOrder});
-           
+        const stringWithoutCommas = submitData.price.replace(/,/g, '');
+        const parsedNumber = parseFloat(stringWithoutCommas);
+        taskFilter({price: parsedNumber, ...infoOrder}); 
     }
 
     const deleteTask = (id) => {

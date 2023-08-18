@@ -63,9 +63,15 @@ export default class BinanceP2PMonitor {
 			}
 
 		}	
-		
+		console.log('status working...');
 		
 		if (getCurrentPath() !== 'advEdit' && this.editPrice > 0) {
+			const currentTime = new Date();
+			const hours = currentTime.getHours();
+			const minutes = currentTime.getMinutes();
+			const seconds = currentTime.getSeconds();
+
+			console.log(`Update price: ${hours}:${minutes}:${seconds}`);
 			nextToEditOrder(this.orderId, this.editPrice);
 		}
 	}
