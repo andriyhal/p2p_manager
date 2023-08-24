@@ -1,11 +1,10 @@
 import React from "react";
-import { saveOrderIdsToLocaleStorage } from "../features/save_order_ids_to_locale_storage";
 import { useAddCreateTaskForm } from "../features/use_add_create_task_form";
 import { WaitFor } from "../utils/wait-for";
 import LocalStorageManager from "../utils/local-storage-manager";
 import BinanceP2PMonitor from "../features/binance_p2p_monitor";
 import { postOrder } from "../features/create-price-editor";
-import { getCurrentPath} from "../dom-helpers";
+import { getCurrentPath} from "../dom-scraper";
 
 const priceData = new LocalStorageManager('priceData');
 
@@ -33,7 +32,6 @@ const App = () => {
     }
 
     useAddCreateTaskForm();
-    saveOrderIdsToLocaleStorage();
 
     return (
         <div>

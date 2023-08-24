@@ -1,4 +1,4 @@
-import { getConfirmToPostButton, getInputEditPrice, getPostButton } from '../dom-helpers';
+import { getConfirmToPostButton, getInputEditPrice, getPostButton } from '../dom-scraper';
 import LocalStorageManager from '../utils/local-storage-manager';
 
 export const nextToEditOrder = (orderId, newPrice) => {

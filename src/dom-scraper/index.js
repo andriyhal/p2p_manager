@@ -20,19 +20,19 @@ export const getInputEditPrice = async () => {
 }
 
 export const getPostButton = async () => {
-    while (document.querySelectorAll('button[data-bn-type="button"]').length !== 7) {
+    while (!document.querySelectorAll('button[data-bn-type="button"]')[5]?.parentElement?.children?.length) {
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
-    return document.querySelectorAll('button[data-bn-type="button"]')[6];
+    return document.querySelectorAll('button[data-bn-type="button"]')[5].parentElement.children[1];
 }
 
 export const getConfirmToPostButton = async () => {
-    while (document.querySelectorAll('button[data-bn-type="button"]').length !== 9) {
+    while (document.querySelectorAll('button[data-bn-type="button"]')[6]?.parentElement?.children?.length !== 2) {
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
-    return document.querySelectorAll('button[data-bn-type="button"]')[8];
+    return document.querySelectorAll('button[data-bn-type="button"]')[6]?.parentElement?.children[1];
 }
 
 export const getOrderList = async () => {
@@ -50,7 +50,7 @@ export const getOrderList = async () => {
             isLoaded = false;
         }
     }
-
+    
     waitFor.start(() => updateOrders());
  
     while (isLoaded) {
@@ -60,13 +60,36 @@ export const getOrderList = async () => {
     return orders;
 }
 
-export const parseOrderInfoFromHtml = htmlElement => {
-    const elements = htmlElement.querySelectorAll('div[data-bn-type="text"]');
-    
-    const orderId = elements[0]?.innerText;
-    const orderType = elements[1]?.innerText;
-    const quoteCurrency = elements[2]?.innerText.split(' / ');
-    const payTypes = elements[8].innerText.split(' ');
+export const getTextsFromHtmlOrderElement = orderElement => 
+    [...orderElement.children].map(collumnElement => 
+        collumnElement.innerText.split('\n').filter(isText => isText !== '')
+    )
 
-    return { orderId, orderType, quoteCurrency, payTypes };
+
+export const convertParsedOrderInfoToObject = order => {
+    const filteredOrderInfo = order.filter(arr => arr.length);
+
+    try {
+        return {
+            orderId: filteredOrderInfo[0][0],
+            tradeType: filteredOrderInfo[0][1],
+            quoteCurrency: filteredOrderInfo[0][2].split(' / '),
+            orderPrice: filteredOrderInfo[2][0],
+            payTypes: filteredOrderInfo[3]
+        }
+    } catch (error) {
+        console.error(error);
+    }
+
+    
+}
+
+
+
+export const parseOrderInfoFromHtml = HTMLCollection => {
+    const dataOrders = HTMLCollection.map(getTextsFromHtmlOrderElement);
+
+    const filteredOrders = dataOrders.map(convertParsedOrderInfoToObject);
+            
+    return filteredOrders;
 }
