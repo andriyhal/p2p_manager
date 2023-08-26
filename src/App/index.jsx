@@ -1,43 +1,41 @@
-import React from "react";
-import { useAddCreateTaskForm } from "../features/use_add_create_task_form";
-import { WaitFor } from "../utils/wait-for";
-import LocalStorageManager from "../utils/local-storage-manager";
-import BinanceP2PMonitor from "../features/binance_p2p_monitor";
-import { postOrder } from "../features/create-price-editor";
-import { getCurrentPath} from "../dom-scraper";
+import React from 'react';
+import { useAddCreateTaskForm } from '../features/use_add_create_task_form';
+import { WaitFor } from '../utils/wait-for';
+import LocalStorageManager from '../utils/local-storage-manager';
+import BinanceP2PMonitor from '../features/binance_p2p_monitor';
+import { postOrder } from '../features/create-price-editor';
+import { getCurrentPath } from '../dom-scraper';
+import { processNextTask } from '../features/queuq-tasks';
 
 const priceData = new LocalStorageManager('priceData');
 
 const tasksInfo = new LocalStorageManager('tasksInfo');
 tasksInfo.saveData(tasksInfo.readData() ? tasksInfo.readData() : []);
-const tasks = tasksInfo.readData().map(task => new BinanceP2PMonitor(task));
-tasks.forEach(task => task.startMonitoring());
+// const tasks = tasksInfo.readData().map(task => new BinanceP2PMonitor(task));
+// tasks.forEach(task => task.startMonitoring());
 
 const monitorTaskList = new WaitFor(1000);
 
+const queue = new WaitFor(50000);
+
 const App = () => {
-    const updata = () => {
-        if (tasks.length < tasksInfo.readData().length) {
-            const task = [...tasksInfo.readData()].pop();
-            tasks.push(new BinanceP2PMonitor(task));
+	if (getCurrentPath() === 'advEdit' && !!priceData.readData()) {
+		postOrder();
+	}
 
-            [...tasks].pop().startMonitoring();
-        }
-    };
+	if (getCurrentPath() !== 'advEdit') {
+		const task = processNextTask();
 
-    monitorTaskList.start(updata);
+		console.log('queue: ', task);
+		if (task) {
+			const binanceP2PMonitor = new BinanceP2PMonitor(task);
+			binanceP2PMonitor.startMonitoring();
+		}
+	}
 
-    if (getCurrentPath() === 'advEdit' && !!priceData.readData()) { 
-        postOrder();
-    }
+	useAddCreateTaskForm();
 
-    useAddCreateTaskForm();
-
-    return (
-        <div>
-        
-        </div>
-    );
+	return <div></div>;
 };
 
 export default App;
