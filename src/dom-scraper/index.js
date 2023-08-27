@@ -13,8 +13,8 @@ export const getCurrentPath = () => {
 
 export const getInputEditPrice = async () => {
 	while (
-		document.querySelectorAll('.bn-input-prefix.css-vurnku')[0]
-			.parentElement.childNodes[1].value !== ''
+		document.querySelectorAll('input[data-bn-type="input"]')[0].attributes
+			.length !== 5
 	) {
 		await new Promise(resolve => setTimeout(resolve, 3000));
 	}
