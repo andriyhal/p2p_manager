@@ -11,41 +11,135 @@ export const getCurrentPath = () => {
 	}
 };
 
-export const getInputEditPrice = async () => {
-	while (
-		document.querySelectorAll('input[data-bn-type="input"]')[0].attributes
-			.length !== 5
-	) {
-		await new Promise(resolve => setTimeout(resolve, 3000));
-	}
-	console.log(Date.toString());
-	return document.querySelectorAll('input[data-bn-type="input"]')[0];
-};
+export const findElementByTraversal = (
+	startingElement,
+	traversalPath,
+	attributeCount,
+	intervalTime = 1000,
+	maxAttempts = 10
+) =>
+	new Promise((resolve, reject) => {
+		let attempts = 0;
+		const interval = setInterval(() => {
+			let currentElement = startingElement;
 
-export const getPostButton = async () => {
-	while (
-		document.querySelectorAll('button[data-bn-type="button"]')[5]
-			?.parentElement.children[1]?.innerText !== 'Post'
-	) {
-		console.log('gggggggggg');
-		await new Promise(resolve => setTimeout(resolve, 15000));
-	}
+			for (const step of traversalPath) {
+				if (step.type === 'parent') {
+					currentElement = currentElement.parentElement;
+				} else if (step.type === 'child') {
+					currentElement = currentElement.children[step.index];
+				} else if (step.type === 'sibling') {
+					currentElement = currentElement.nextElementSibling;
+				}
+				console.log(currentElement);
+				if (!currentElement) {
+					break;
+				}
+			}
 
-	return document.querySelectorAll('button[data-bn-type="button"]')[5]
-		.parentElement.children[1];
-};
+			if (
+				currentElement &&
+				currentElement.attributes.length === attributeCount
+			) {
+				clearInterval(interval);
+				resolve(currentElement);
+				return;
+			}
 
-export const getConfirmToPostButton = async () => {
-	while (
-		document.querySelectorAll('button[data-bn-type="button"]')[7]
-			?.parentElement?.children[1].innerText !== 'Confirm to post'
-	) {
-		await new Promise(resolve => setTimeout(resolve, 30000));
-	}
+			attempts++;
+			if (attempts >= maxAttempts) {
+				clearInterval(interval);
+				reject(
+					new Error(`Element not found after ${attempts} attempts.`)
+				);
+			}
+		}, intervalTime);
+	});
 
-	return document.querySelectorAll('button[data-bn-type="button"]')[7]
-		?.parentElement?.children[1];
-};
+export const getInputEditPrice = () =>
+	new Promise(resolve => {
+		const INPUT_SELECTOR = 'input[data-bn-type="input"]';
+
+		let interval = null;
+
+		const checkInput = () => {
+			const input = document.querySelectorAll(INPUT_SELECTOR)[0];
+
+			if (input?.attributes?.length === 5) {
+				resolve(input);
+				clearInterval(interval);
+			}
+		};
+
+		interval = setInterval(checkInput, 500);
+		checkInput();
+	});
+
+export const getPostButton = () =>
+	new Promise(resolve => {
+		const BUTTONT_SELECTOR = 'button[data-bn-type="button"]';
+
+		let interval = null;
+
+		const checkButton = () => {
+			const button =
+				document.querySelectorAll(BUTTONT_SELECTOR)[5]?.parentElement
+					.children[1];
+
+			if (button?.attributes?.length === 2) {
+				resolve(button);
+				clearInterval(interval);
+			}
+		};
+
+		interval = setInterval(checkButton, 2000);
+		checkButton();
+	});
+
+export const getConfirmToPostButton = () =>
+	new Promise(resolve => {
+		const BUTTONT_SELECTOR = 'button[data-bn-type="button"]';
+
+		let interval = null;
+
+		const checkButton = () => {
+			const button =
+				document.querySelectorAll(BUTTONT_SELECTOR)[7]?.parentElement
+					.children[1];
+
+			if (button?.attributes?.length === 2) {
+				resolve(button);
+				clearInterval(interval);
+			}
+		};
+
+		interval = setInterval(checkButton, 2000);
+		checkButton();
+	});
+
+// export const getPostButton = async () => {
+// 	while (
+// 		document.querySelectorAll('button[data-bn-type="button"]')[5]
+// 			?.parentElement.children[1]?.innerText !== 'Post'
+// 	) {
+// 		await new Promise(resolve => setTimeout(resolve, 1000));
+// 	}
+
+// 	return document.querySelectorAll('button[data-bn-type="button"]')[5]
+// 		.parentElement.children[1];
+// };
+
+// export const getConfirmToPostButton = async () => {
+// 	while (
+// 		document.querySelectorAll('button[data-bn-type="button"]')[7]
+// 			?.parentElement?.children[1].innerText !== 'Confirm to post'
+// 	) {
+// 		await new Promise(resolve => setTimeout(resolve, 1000));
+// 	}
+
+// 	return document.querySelectorAll('button[data-bn-type="button"]')[7]
+// 		?.parentElement?.children[1];
+// };
 
 export const getOrderList = async () => {
 	const waitFor = new WaitFor(100);

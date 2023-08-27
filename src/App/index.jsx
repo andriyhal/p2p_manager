@@ -11,14 +11,13 @@ const priceData = new LocalStorageManager('priceData');
 
 const tasksInfo = new LocalStorageManager('tasksInfo');
 tasksInfo.saveData(tasksInfo.readData() ? tasksInfo.readData() : []);
-// const tasks = tasksInfo.readData().map(task => new BinanceP2PMonitor(task));
-// tasks.forEach(task => task.startMonitoring());
 
 const monitorTaskList = new WaitFor(1000);
 
 const queue = new WaitFor(50000);
 
 const App = () => {
+	// fetchAllOrdersAndUpdateLocalStorage();
 	if (getCurrentPath() === 'advEdit' && !!priceData.readData()) {
 		postOrder();
 	}

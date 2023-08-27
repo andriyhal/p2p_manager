@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import LocalStorageManager from '../utils/local-storage-manager';
 
 function useTaskLocalStorage() {

@@ -1,5 +1,5 @@
 import LocalStorageManager from '../utils/local-storage-manager';
-import useTaskLocalStorage from './useTaskLocalStorage';
+import useTaskLocalStorage from './use-task-local-storage';
 
 const tasksInfo = new LocalStorageManager('tasksInfo');
 

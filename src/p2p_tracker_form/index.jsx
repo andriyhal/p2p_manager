@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { styled } from '@mui/system';
-import { FormInputText } from './input';
 import { TrashButton } from './TrashButton';
 import { PlusButton } from './PlusButton';
 import { EditButton } from './EditButton';
-import useTaskLocalStorage from './useTaskLocalStorage';
+import useTaskLocalStorage from './use-task-local-storage';
 import {
 	handleDeleteTask,
 	handleSaveTaskToLocalStorage
-} from './taskEventHandlers';
+} from './task-event-handlers';
+import { FormInputsGroup } from './FormInputsGroup';
 
 const FormContainer = styled('form')({
 	position: 'absolute',
@@ -47,16 +47,7 @@ export const P2PTrackerForm = props => {
 				onSubmit={handleSubmit(handleSaveTask)}
 				id={props.orderId}
 			>
-				<FormInputText
-					label='price threshold'
-					name='priceThreshold'
-					control={control}
-				/>
-				<FormInputText
-					label='target order amount'
-					name='targetOrderAmount'
-					control={control}
-				/>
+				<FormInputsGroup control={control} />
 				{isTask ? (
 					<>
 						<EditButton />

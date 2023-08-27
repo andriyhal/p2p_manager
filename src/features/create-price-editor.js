@@ -4,7 +4,6 @@ import {
 	getPostButton
 } from '../dom-scraper';
 import LocalStorageManager from '../utils/local-storage-manager';
-import runOnWindowLoad from '../utils/run-on-window-load';
 
 export const nextToEditOrder = (orderId, newPrice) => {
 	const priceData = new LocalStorageManager('priceData');
@@ -14,25 +13,27 @@ export const nextToEditOrder = (orderId, newPrice) => {
 		'https://p2p.binance.com/en/advEdit?code=' + orderId;
 };
 
-export const postOrder = () => {
+export const postOrder = async () => {
 	const storageManager = new LocalStorageManager('priceData');
 	const data = storageManager.readData();
 
-	runOnWindowLoad(() => {
-		getInputEditPrice().then(priceInputElement => {
-			const lastValue = priceInputElement.value;
-			priceInputElement.value = data.newPrice;
-			const event = new Event('input', { bubbles: true });
-			event.simulated = true;
-			const tracker = priceInputElement._valueTracker;
-			if (tracker) {
-				tracker.setValue(lastValue);
-			}
-			priceInputElement.dispatchEvent(event);
-			storageManager.saveData(false);
-		});
+	// Пример использования
 
-		getPostButton().then(button => button.click());
-		getConfirmToPostButton().then(button => button.click());
-	});
+	const priceInputElement = await getInputEditPrice();
+
+	const lastValue = priceInputElement.value;
+	priceInputElement.value = data.newPrice;
+	const event = new Event('input', { bubbles: true });
+	event.simulated = true;
+	const tracker = priceInputElement._valueTracker;
+	if (tracker) {
+		tracker.setValue(lastValue);
+	}
+	priceInputElement.dispatchEvent(event);
+	storageManager.saveData(false);
+
+	const postButton = await getPostButton();
+	postButton.click();
+	const confirmButton = await getConfirmToPostButton();
+	confirmButton.click();
 };
