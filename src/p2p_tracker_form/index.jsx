@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { styled } from '@mui/system';
-import { Button } from '@mui/material';
-
 import { FormInputText } from './input';
-
 import { TrashButton } from './TrashButton';
 import { PlusButton } from './PlusButton';
 import { EditButton } from './EditButton';
-
-import LocalStorageManager from '../utils/local-storage-manager';
+import useTaskLocalStorage from './useTaskLocalStorage';
+import {
+	handleDeleteTask,
+	handleSaveTaskToLocalStorage
+} from './taskEventHandlers';
 
 const FormContainer = styled('form')({
 	position: 'absolute',
@@ -26,72 +26,25 @@ const P2PTrackerFormContainer = styled('div')({
 	gap: '15px'
 });
 
-const tasksInfo = new LocalStorageManager('tasksInfo');
-tasksInfo.saveData(tasksInfo.readData() ? tasksInfo.readData() : []);
-
-const taskFilter = data => {
-	const existingIndex = tasksInfo
-		.readData()
-		.findIndex(task => task.orderId === data.orderId);
-
-	if (existingIndex === -1) {
-		tasksInfo.saveData([...tasksInfo.readData(), data]);
-	} else {
-		tasksInfo.saveData(
-			tasksInfo.readData().map(item =>
-				item.orderId === data.orderId
-					? {
-							...item,
-							priceThreshold: data.priceThreshold,
-							targetOrderAmount: data.targetOrderAmount
-					  }
-					: item
-			)
-		);
-	}
-};
-
 export const P2PTrackerForm = props => {
 	const { control, handleSubmit } = useForm();
-	const [isTask, setIsTask] = useState(
-		!!tasksInfo
-			.readData()
-			.filter(task => task.orderId === props.orderId)?.[0]
-	);
+	const { isTaskStored } = useTaskLocalStorage();
+	const [isTask, setIsTask] = useState(isTaskStored(props.orderId));
 
-	const handleSaveTaskToLocalStorage = submitData => {
-		console.log('Suka');
-		const stringWithoutCommasPriceThreshold =
-			submitData.priceThreshold.replace(/,/g, '');
-		const parsedNumberPriceThreshold = parseFloat(
-			stringWithoutCommasPriceThreshold
-		);
-
-		const stringWithoutCommasTargetOrderAmount =
-			submitData.targetOrderAmount.replace(/,/g, '');
-		const parsedNumberTargetOrderAmount = parseFloat(
-			stringWithoutCommasTargetOrderAmount
-		);
-
-		taskFilter({
-			priceThreshold: parsedNumberPriceThreshold,
-			targetOrderAmount: parsedNumberTargetOrderAmount,
-			...props
-		});
+	const handleSaveTask = submitData => {
+		handleSaveTaskToLocalStorage(submitData, props);
+		setIsTask(isTaskStored(props.orderId));
 	};
 
-	const deleteTask = () => {
-		setIsTask(false);
-
-		tasksInfo.saveData(
-			tasksInfo.readData().filter(task => task.orderId !== props.orderId)
-		);
+	const handleDelete = () => {
+		handleDeleteTask(props);
+		setIsTask(isTaskStored(props.orderId));
 	};
 
 	return (
 		<P2PTrackerFormContainer>
 			<FormContainer
-				onSubmit={handleSubmit(handleSaveTaskToLocalStorage)}
+				onSubmit={handleSubmit(handleSaveTask)}
 				id={props.orderId}
 			>
 				<FormInputText
@@ -107,8 +60,7 @@ export const P2PTrackerForm = props => {
 				{isTask ? (
 					<>
 						<EditButton />
-
-						<TrashButton deleteTask={deleteTask} />
+						<TrashButton deleteTask={handleDelete} />
 					</>
 				) : (
 					<PlusButton />
