@@ -30,10 +30,14 @@ export const postOrder = async () => {
 		tracker.setValue(lastValue);
 	}
 	priceInputElement.dispatchEvent(event);
+
 	storageManager.saveData(false);
 
-	const postButton = await getPostButton();
-	postButton.click();
-	const confirmButton = await getConfirmToPostButton();
-	confirmButton.click();
+	setTimeout(async () => {
+		const postButton = await getPostButton();
+		postButton.click();
+		const confirmButton = await getConfirmToPostButton();
+		confirmButton.click();
+	}, 1000);
+
 };

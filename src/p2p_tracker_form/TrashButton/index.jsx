@@ -23,7 +23,6 @@ const DeleteIconCss = styled(DeleteIcon)({
 });
 
 export const TrashButton = props => {
-	console.log({ props });
 	return (
 		<TrashButtonCss variant='contained' onClick={() => props.deleteTask()}>
 			<DeleteIconCss />

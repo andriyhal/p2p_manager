@@ -11,6 +11,21 @@ export const getCurrentPath = () => {
 	}
 };
 
+const getElement = element =>
+	new Promise(resolve => {
+		let interval = null;
+
+		const checkElement = () => {
+			if (element?.attributes?.length > 0) {
+				resolve(element);
+				clearInterval(interval);
+			}
+		};
+
+		interval = setInterval(checkElement, 100);
+		checkElement();
+	});
+
 export const findElementByTraversal = (
 	startingElement,
 	traversalPath,
@@ -25,10 +40,19 @@ export const findElementByTraversal = (
 
 			for (const step of traversalPath) {
 				if (step.type === 'parent') {
+					while (!currentElement.parentElement) {
+						console.log('loadding...');
+					}
 					currentElement = currentElement.parentElement;
 				} else if (step.type === 'child') {
+					while (!currentElement.children[step.index]) {
+						console.log('loadding...');
+					}
 					currentElement = currentElement.children[step.index];
 				} else if (step.type === 'sibling') {
+					while (!currentElement.nextElementSibling) {
+						console.log('loadding...');
+					}
 					currentElement = currentElement.nextElementSibling;
 				}
 				console.log(currentElement);
@@ -71,7 +95,7 @@ export const getInputEditPrice = () =>
 			}
 		};
 
-		interval = setInterval(checkInput, 500);
+		interval = setInterval(checkInput, 100);
 		checkInput();
 	});
 
@@ -92,7 +116,7 @@ export const getPostButton = () =>
 			}
 		};
 
-		interval = setInterval(checkButton, 2000);
+		interval = setInterval(checkButton, 3000);
 		checkButton();
 	});
 
@@ -113,7 +137,7 @@ export const getConfirmToPostButton = () =>
 			}
 		};
 
-		interval = setInterval(checkButton, 2000);
+		interval = setInterval(checkButton, 3000);
 		checkButton();
 	});
 
