@@ -1,11 +1,10 @@
 import React from 'react';
 import { useAddCreateTaskForm } from '../features/use_add_create_task_form';
 import LocalStorageManager from '../utils/local-storage-manager';
-import BinanceP2PMonitor from '../features/binance_p2p_monitor';
 import { postOrder } from '../features/create-price-editor';
 import { getCurrentPath } from '../dom-scraper';
-import { processNextTask } from '../features/queuq-tasks';
-import { checkOrStartTaskMonitoring } from '../features/task-monitoring';
+import { p2pMonitoring } from '../features/p2p-monitoring';
+import { unlockOrder } from '../utils/order-locker';
 
 const priceData = new LocalStorageManager('priceData');
 
@@ -17,11 +16,18 @@ const App = () => {
 		postOrder();
 	}
 
-	checkOrStartTaskMonitoring();
+	if (getCurrentPath() === 'myads' && !priceData.readData()) {
+		useAddCreateTaskForm();
+		p2pMonitoring();
+	}
 
-	useAddCreateTaskForm();
+	unlockOrder();
 
-	return <div></div>;
+	return (
+		<div>
+			
+		</div>
+	);
 };
 
 export default App;

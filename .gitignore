@@ -2,6 +2,7 @@
 /dist
 /.env
 /.prettierrc
+/test
 
 # IDE local files and folders
 

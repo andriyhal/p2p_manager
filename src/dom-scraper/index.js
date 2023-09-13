@@ -11,75 +11,6 @@ export const getCurrentPath = () => {
 	}
 };
 
-const getElement = element =>
-	new Promise(resolve => {
-		let interval = null;
-
-		const checkElement = () => {
-			if (element?.attributes?.length > 0) {
-				resolve(element);
-				clearInterval(interval);
-			}
-		};
-
-		interval = setInterval(checkElement, 100);
-		checkElement();
-	});
-
-export const findElementByTraversal = (
-	startingElement,
-	traversalPath,
-	attributeCount,
-	intervalTime = 1000,
-	maxAttempts = 10
-) =>
-	new Promise((resolve, reject) => {
-		let attempts = 0;
-		const interval = setInterval(() => {
-			let currentElement = startingElement;
-
-			for (const step of traversalPath) {
-				if (step.type === 'parent') {
-					while (!currentElement.parentElement) {
-						console.log('loadding...');
-					}
-					currentElement = currentElement.parentElement;
-				} else if (step.type === 'child') {
-					while (!currentElement.children[step.index]) {
-						console.log('loadding...');
-					}
-					currentElement = currentElement.children[step.index];
-				} else if (step.type === 'sibling') {
-					while (!currentElement.nextElementSibling) {
-						console.log('loadding...');
-					}
-					currentElement = currentElement.nextElementSibling;
-				}
-				console.log(currentElement);
-				if (!currentElement) {
-					break;
-				}
-			}
-
-			if (
-				currentElement &&
-				currentElement.attributes.length === attributeCount
-			) {
-				clearInterval(interval);
-				resolve(currentElement);
-				return;
-			}
-
-			attempts++;
-			if (attempts >= maxAttempts) {
-				clearInterval(interval);
-				reject(
-					new Error(`Element not found after ${attempts} attempts.`)
-				);
-			}
-		}, intervalTime);
-	});
-
 export const getInputEditPrice = () =>
 	new Promise(resolve => {
 		const INPUT_SELECTOR = 'input[data-bn-type="input"]';
@@ -141,30 +72,6 @@ export const getConfirmToPostButton = () =>
 		checkButton();
 	});
 
-// export const getPostButton = async () => {
-// 	while (
-// 		document.querySelectorAll('button[data-bn-type="button"]')[5]
-// 			?.parentElement.children[1]?.innerText !== 'Post'
-// 	) {
-// 		await new Promise(resolve => setTimeout(resolve, 1000));
-// 	}
-
-// 	return document.querySelectorAll('button[data-bn-type="button"]')[5]
-// 		.parentElement.children[1];
-// };
-
-// export const getConfirmToPostButton = async () => {
-// 	while (
-// 		document.querySelectorAll('button[data-bn-type="button"]')[7]
-// 			?.parentElement?.children[1].innerText !== 'Confirm to post'
-// 	) {
-// 		await new Promise(resolve => setTimeout(resolve, 1000));
-// 	}
-
-// 	return document.querySelectorAll('button[data-bn-type="button"]')[7]
-// 		?.parentElement?.children[1];
-// };
-
 export const getOrderList = async () => {
 	const waitFor = new WaitFor(100);
 	let isLoaded = true;
@@ -204,22 +111,8 @@ export const convertParsedOrderInfoToObject = order => {
 	const filteredOrderInfo = order.filter(arr => arr.length);
 
 	try {
-		return {
-			orderId: filteredOrderInfo[0][0],
-			tradeType: filteredOrderInfo[0][1],
-			quoteCurrency: filteredOrderInfo[0][2].split(' / '),
-			orderPrice: filteredOrderInfo[2][0],
-			payTypes: filteredOrderInfo[3]
-		};
+		return filteredOrderInfo[0][0];
 	} catch (error) {
-		console.error(error);
+		return console.error(error);
 	}
-};
-
-export const parseOrderInfoFromHtml = HTMLCollection => {
-	const dataOrders = HTMLCollection.map(getTextsFromHtmlOrderElement);
-
-	const filteredOrders = dataOrders.map(convertParsedOrderInfoToObject);
-
-	return filteredOrders;
 };

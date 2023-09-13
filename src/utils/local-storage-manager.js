@@ -10,7 +10,11 @@ class LocalStorageManager {
     }
 
     saveData(data) {
-        localStorage.setItem(this.key, JSON.stringify(data));
+        if (typeof data ===  'object' && data !== null) {
+            localStorage.setItem(this.key, JSON.stringify(data))
+        } else {
+            localStorage.setItem(this.key, data)
+        }
     }
 
     readData() {

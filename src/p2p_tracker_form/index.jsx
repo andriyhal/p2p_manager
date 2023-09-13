@@ -10,10 +10,6 @@ import {
 	handleSaveTaskToLocalStorage
 } from './task-event-handlers';
 import { FormInputsGroup } from './FormInputsGroup';
-import {
-	checkOrStartTaskMonitoring,
-	checkOrStopTaskMonitoring
-} from '../features/task-monitoring';
 
 const FormContainer = styled('form')({
 	position: 'absolute',
@@ -38,7 +34,6 @@ export const P2PTrackerForm = props => {
 	const handleSaveTask = submitData => {
 		handleSaveTaskToLocalStorage(submitData, props);
 		setIsTask(isTaskStored(props.orderId));
-		checkOrStartTaskMonitoring();
 	};
 
 	const handleDelete = () => {
@@ -53,7 +48,7 @@ export const P2PTrackerForm = props => {
 				onSubmit={handleSubmit(handleSaveTask)}
 				id={props.orderId}
 			>
-				<FormInputsGroup control={control} />
+				<FormInputsGroup control={control} orderId={props.orderId}/>
 				{isTask ? (
 					<>
 						<EditButton />

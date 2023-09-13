@@ -17,17 +17,13 @@ export const useAddCreateTaskForm = () => {
 				if (hasId) {
 					return;
 				}
-
+				const orderId = convertParsedOrderInfoToObject(
+					getTextsFromHtmlOrderElement(order)
+				);
 				const taskControlForm = document.createElement('div');
 				order.appendChild(taskControlForm);
 				const root = createRoot(taskControlForm);
-				root.render(
-					<P2PTrackerForm
-						{...convertParsedOrderInfoToObject(
-							getTextsFromHtmlOrderElement(order)
-						)}
-					/>
-				);
+				root.render(<P2PTrackerForm orderId={orderId} />);
 			});
 		});
 	}

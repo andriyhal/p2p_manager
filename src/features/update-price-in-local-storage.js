@@ -7,6 +7,6 @@ tasksInfo.saveData(tasksInfo.readData() ? tasksInfo.readData() : []);
 export const updatePriceInLocalStorage = (orderId, orderPrice) => {
 
     tasksInfo.saveData(tasksInfo.readData().map(item => 
-        item.orderId === orderId ? {...item, orderPrice: JSON.stringify(orderPrice) } : item
+        item.orderId === orderId ? {...item, orderPrice: orderPrice } : item
     ));
 }
