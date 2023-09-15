@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { P2PTrackerForm } from '../p2p_tracker_form';
+import { P2PTrackerForm } from '../p2p-tracker-form';
 import {
 	convertParsedOrderInfoToObject,
 	getCurrentPath,

@@ -1,0 +1,1 @@
+export const TASKS_INFO_STORAGE_KEY = 'tasksInfo';

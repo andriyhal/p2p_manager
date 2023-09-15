@@ -1,8 +1,7 @@
 import { getCurrentPath } from '../../dom-scraper';
-import { isLocked, lockOrder } from '../../utils/order-locker';
-import { nextToEditOrder } from '../create-price-editor';
+import { lockOrder } from '../../utils/order-locker';
+import { nextToEditOrder } from '../edit-order-price';
 import { processNextTask } from '../queuq-tasks';
-// import { updatePriceInLocalStorage } from '../update-price-in-local-storage';
 
 const parseResponseDataJson = response => {
 	return response.map(order => {
