@@ -3,7 +3,7 @@ import { useAddCreateTaskForm } from '../features/use-add-create-task-form';
 import LocalStorageManager from '../utils/local-storage-manager';
 import { postOrder } from '../features/create-price-editor';
 import { getCurrentPath } from '../dom-scraper';
-import { p2pMonitoring } from '../features/p2p-monitoring';
+import { p2pMonitoring } from '../features/scan-p2p-orders';
 import { unlockOrder } from '../utils/order-locker';
 
 const priceData = new LocalStorageManager('priceData');

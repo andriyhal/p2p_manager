@@ -16,8 +16,8 @@ function useTaskLocalStorage() {
 					item.orderId === data.orderId
 						? {
 								...item,
-								priceThreshold: data.priceThreshold,
-								targetOrderAmount: data.targetOrderAmount
+								priceLimit: data.priceLimit,
+								beatBy: data.beatBy
 						  }
 						: item
 				)

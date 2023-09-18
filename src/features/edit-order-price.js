@@ -2,7 +2,7 @@ import {
 	getConfirmToPostButton,
 	getInputEditPrice,
 	getPostButton
-} from '../dom-scraper';
+} from '../shared/lib/dom-scraper';
 import LocalStorageManager from '../utils/local-storage-manager';
 import { unlockOrder } from '../utils/order-locker';
 

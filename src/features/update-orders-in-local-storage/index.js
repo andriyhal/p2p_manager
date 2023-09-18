@@ -1,4 +1,4 @@
-import { getCurrentPath } from '../../dom-scraper';
+import { getCurrentPath } from '../../shared/lib/dom-scraper';
 import { lockOrder } from '../../utils/order-locker';
 import { nextToEditOrder } from '../edit-order-price';
 import { processNextTask } from '../queuq-tasks';
@@ -44,17 +44,17 @@ const compareOrders = orders => {
 				if (
 					trader.tradeType === 'SELL' &&
 					parseFloat(outOrder.price) > traderPrice &&
-					traderPrice > task.priceThreshold
+					traderPrice > task.priceLimit
 				) {
-					editPrice = traderPrice - task.targetOrderAmount;
+					editPrice = traderPrice - task.beatBy;
 				}
 
 				if (
 					trader.tradeType === 'BUY' &&
 					parseFloat(outOrder.price) < traderPrice &&
-					traderPrice < task.priceThreshold
+					traderPrice < task.priceLimit
 				) {
-					editPrice = traderPrice + task.targetOrderAmount;
+					editPrice = traderPrice + task.beatBy;
 				}
 				
 

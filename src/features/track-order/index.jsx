@@ -20,13 +20,13 @@ const FormContainer = styled('form')({
 	bottom: '10px'
 });
 
-const P2PTrackerFormContainer = styled('div')({
+const OrderTrackerFormContainer = styled('div')({
 	display: 'flex',
 	flexDirection: 'column',
 	gap: '15px'
 });
 
-export const P2PTrackerForm = props => {
+export const OrderTrackerForm = props => {
 	const { control, handleSubmit } = useForm();
 	const { isTaskStored } = useTaskLocalStorage();
 	const [isTask, setIsTask] = useState(isTaskStored(props.orderId));
@@ -43,7 +43,7 @@ export const P2PTrackerForm = props => {
 	};
 
 	return (
-		<P2PTrackerFormContainer>
+		<OrderTrackerFormContainer>
 			<FormContainer
 				onSubmit={handleSubmit(handleSaveTask)}
 				id={props.orderId}
@@ -58,6 +58,6 @@ export const P2PTrackerForm = props => {
 					<PlusButton />
 				)}
 			</FormContainer>
-		</P2PTrackerFormContainer>
+		</OrderTrackerFormContainer>
 	);
 };

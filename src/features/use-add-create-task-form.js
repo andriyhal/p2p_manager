@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { P2PTrackerForm } from '../p2p-tracker-form';
+import { OrderTrackerForm } from '../track-order';
 import {
 	convertParsedOrderInfoToObject,
 	getCurrentPath,
@@ -23,7 +23,7 @@ export const useAddCreateTaskForm = () => {
 				const taskControlForm = document.createElement('div');
 				order.appendChild(taskControlForm);
 				const root = createRoot(taskControlForm);
-				root.render(<P2PTrackerForm orderId={orderId} />);
+				root.render(<OrderTrackerForm orderId={orderId} />);
 			});
 		});
 	}

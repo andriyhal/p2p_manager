@@ -1,4 +1,4 @@
-import { WaitFor } from '../utils/wait-for';
+import { WaitFor } from '../../../utils/wait-for';
 
 export const getCurrentPath = () => {
 	const path = document.location.pathname;

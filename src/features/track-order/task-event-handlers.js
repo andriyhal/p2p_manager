@@ -5,23 +5,23 @@ const tasksInfo = new LocalStorageManager('tasksInfo');
 
 export const handleSaveTaskToLocalStorage = (submitData, props) => {
 	const { storeTaskAndUpdateIfExists } = useTaskLocalStorage();
-	const stringWithoutCommasPriceThreshold = submitData.priceThreshold.replace(
+	const stringWithoutCommasPriceLimit = submitData.priceLimit.replace(
 		/,/g,
 		''
 	);
-	const parsedNumberPriceThreshold = parseFloat(
-		stringWithoutCommasPriceThreshold
+	const parsedNumberPriceLimit = parseFloat(
+		stringWithoutCommasPriceLimit
 	);
 
-	const stringWithoutCommasTargetOrderAmount =
-		submitData.targetOrderAmount.replace(/,/g, '');
-	const parsedNumberTargetOrderAmount = parseFloat(
-		stringWithoutCommasTargetOrderAmount
+	const stringWithoutCommasBeatBy =
+		submitData.beatBy.replace(/,/g, '');
+	const parsedNumberBeatBy = parseFloat(
+		stringWithoutCommasBeatBy
 	);
 
 	storeTaskAndUpdateIfExists({
-		priceThreshold: parsedNumberPriceThreshold,
-		targetOrderAmount: parsedNumberTargetOrderAmount,
+		priceLimit: parsedNumberPriceLimit,
+		beatBy: parsedNumberBeatBy,
 		...props
 	});
 };

@@ -1,5 +1,5 @@
 import LocalStorageManager from '../utils/local-storage-manager';
-import { fetchTradersOrders } from '../api-binance-p2p/fetch-traders-orders';
+import { fetchTradersOrders } from '../shared/api';
 import { updateOrdersInLocalStorage } from './update-orders-in-local-storage';
 import { isLocked } from '../utils/order-locker';
 
