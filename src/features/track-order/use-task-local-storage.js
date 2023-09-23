@@ -1,4 +1,4 @@
-import LocalStorageManager from '../utils/local-storage-manager';
+import LocalStorageManager from '../../shared/lib/local-storage-manager';
 
 function useTaskLocalStorage() {
 	const tasksInfo = new LocalStorageManager('tasksInfo');

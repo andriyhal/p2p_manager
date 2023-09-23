@@ -1,4 +1,4 @@
-import { WaitFor } from '../../../utils/wait-for';
+import { WaitFor } from '../wait-for';
 
 export const getCurrentPath = () => {
 	const path = document.location.pathname;
@@ -111,7 +111,10 @@ export const convertParsedOrderInfoToObject = order => {
 	const filteredOrderInfo = order.filter(arr => arr.length);
 
 	try {
-		return filteredOrderInfo[0][0];
+		return {
+			orderId: filteredOrderInfo[0][0],
+			price: filteredOrderInfo[0][3]
+		};
 	} catch (error) {
 		return console.error(error);
 	}

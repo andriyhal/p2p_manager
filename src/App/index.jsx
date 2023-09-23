@@ -1,10 +1,10 @@
 import React from 'react';
 import { useAddCreateTaskForm } from '../features/use-add-create-task-form';
-import LocalStorageManager from '../utils/local-storage-manager';
-import { postOrder } from '../features/create-price-editor';
-import { getCurrentPath } from '../dom-scraper';
+import LocalStorageManager from '../shared/lib/local-storage-manager';
+import { postOrder } from '../features/edit-order-price';
+import { getCurrentPath } from '../shared/lib/dom-scraper';
 import { p2pMonitoring } from '../features/scan-p2p-orders';
-import { unlockOrder } from '../utils/order-locker';
+import { unlockOrder } from '../shared/lib/order-locker';
 
 const priceData = new LocalStorageManager('priceData');
 
@@ -23,11 +23,7 @@ const App = () => {
 
 	unlockOrder();
 
-	return (
-		<div>
-			
-		</div>
-	);
+	return <div></div>;
 };
 
 export default App;

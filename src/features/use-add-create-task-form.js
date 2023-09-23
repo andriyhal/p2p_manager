@@ -1,12 +1,12 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { OrderTrackerForm } from '../track-order';
+import { OrderTrackerForm } from './track-order';
 import {
 	convertParsedOrderInfoToObject,
 	getCurrentPath,
 	getOrderList,
 	getTextsFromHtmlOrderElement
-} from '../dom-scraper';
+} from '../shared/lib/dom-scraper';
 
 export const useAddCreateTaskForm = () => {
 	if (getCurrentPath() === 'myads') {

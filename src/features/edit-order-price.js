@@ -3,14 +3,13 @@ import {
 	getInputEditPrice,
 	getPostButton
 } from '../shared/lib/dom-scraper';
-import LocalStorageManager from '../utils/local-storage-manager';
-import { unlockOrder } from '../utils/order-locker';
+import LocalStorageManager from '../shared/lib/local-storage-manager';
+import { unlockOrder } from '../shared/lib/order-locker';
 
 export const nextToEditOrder = (orderId, newPrice) => {
 	const priceData = new LocalStorageManager('priceData');
 	priceData.saveData({ orderId, newPrice });
-	
-	
+
 	document.location.href =
 		'https://p2p.binance.com/en/advEdit?code=' + orderId;
 };

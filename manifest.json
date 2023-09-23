@@ -1,25 +1,25 @@
 {
-  "manifest_version": 3,
-  "name": "P2P manager",
-  "description": "A chrome extension for managing p2p orders",
-  "action": {
-    "default_icon": "p2p.png"
-  },
-  "icons": {
-    "128": "p2p.png"
-  },
-  "permissions": [
-    "activeTab"
-  ],
-  "content_scripts": [
-    {
-      "matches": [
-        "https://www.binance.com/*",
-        "https://p2p.binance.com/*"
-      ],
-      "js": [
-        "bundle.js"
-      ]
-    }
-  ]
+	"manifest_version": 2,
+	"name": "P2P manager",
+	"description": "A chrome extension for managing p2p orders",
+	"background": {
+		"scripts": ["background.js"],
+		"persistent": true
+	},
+	"action": {
+		"default_icon": "p2p.png"
+	},
+	"icons": {
+		"128": "p2p.png"
+	},
+	"permissions": ["activeTab", "webRequest"],
+	"content_scripts": [
+		{
+			"matches": [
+				"https://www.binance.com/*",
+				"https://p2p.binance.com/*"
+			],
+			"js": ["bundle.js"]
+		}
+	]
 }
