@@ -2,44 +2,37 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import runOnWindowLoad from './shared/lib/run-on-window-load';
+import { waitForElement } from '../test/waitForElement';
 
-var oldXHROpen = window.XMLHttpRequest.prototype.open;
-window.XMLHttpRequest.prototype.open = function (
-	method,
-	url,
-	async,
-	user,
-	password
-) {
-	try {
-		if (url.indexOf('private/c2c/adv/list-by-page') !== -1) {
-			console.log(1);
-			this.addEventListener('load', () => {
-				console.log(2);
-				if (this.status === 200) {
-					console.log(3);
-					var responseData = this.responseText;
-					var parsedData = JSON.parse(responseData);
-					console.log(parsedData);
-				}
-			});
+runOnWindowLoad(() => {
+	// const traversalPath = [
+	// 	{ type: 'parent' },
+	// 	{ type: 'parent' },
+	// 	{ type: 'parent' },
+	// 	{ type: 'parent' },
+	// 	{ type: 'parent' },
+	// 	{ type: 'child', index: 1 },
+	// 	{ type: 'child', index: 0 },
+	// 	{ type: 'child', index: 0 }
+	// ];
 
-			window.XMLHttpRequest.prototype.open = oldXHROpen;
-		}
+	// const fn = async () => {
+	// 	const todos = await waitForElement(
+	// 		'c2c_batchOperation_checkbox_selectAll',
+	// 		traversalPath,
+	// 		20000
+	// 	);
+	// 	console.log('Node todo', todos);
+	// };
 
-		return oldXHROpen.apply(this, arguments);
-	} catch (e) {
-		resolveAdsAllowedToRun();
-	}
-};
+	// fn();
 
-// runOnWindowLoad(() => {
-// 	const newElement = document.createElement('div');
-// 	const bodyElement = document.getElementsByTagName('body')[0];
+	const newElement = document.createElement('div');
+	const bodyElement = document.getElementsByTagName('body')[0];
 
-// 	newElement.id = 'root';
-// 	bodyElement.insertBefore(newElement, bodyElement.firstChild);
+	newElement.id = 'root';
+	bodyElement.insertBefore(newElement, bodyElement.firstChild);
 
-// 	const root = createRoot(document.getElementById('root'));
-// 	root.render(<App />);
-// });
+	const root = createRoot(document.getElementById('root'));
+	root.render(<App />);
+});

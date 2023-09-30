@@ -17,7 +17,8 @@
 		{
 			"matches": [
 				"https://www.binance.com/*",
-				"https://p2p.binance.com/*"
+				"https://p2p.binance.com/*",
+				"https://accounts.binance.com/*"
 			],
 			"js": ["bundle.js"]
 		}

@@ -1,6 +1,5 @@
 import LocalStorageManager from '../shared/lib/local-storage-manager';
 import { fetchTradersOrders } from '../shared/api';
-import { updateOrdersInLocalStorage } from './update-orders-in-local-storage';
 import { isLocked } from '../shared/lib/order-locker';
 
 const settingsRequestData = new LocalStorageManager('SETTINGS_REQUEST_DATA');
@@ -48,8 +47,6 @@ export const p2pMonitoring = async () => {
 
 		if (!isLocked()) {
 			if (orders.length > 0) {
-				updateOrdersInLocalStorage(orders);
-
 				offsetPage++;
 			} else {
 				if (tradeType === 'BUY') {
