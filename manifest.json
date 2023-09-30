@@ -2,10 +2,6 @@
 	"manifest_version": 2,
 	"name": "P2P manager",
 	"description": "A chrome extension for managing p2p orders",
-	"background": {
-		"scripts": ["background.js"],
-		"persistent": true
-	},
 	"action": {
 		"default_icon": "p2p.png"
 	},

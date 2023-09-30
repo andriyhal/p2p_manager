@@ -102,20 +102,94 @@ export const getOrderList = async () => {
 	return orders;
 };
 
-export const getTextsFromHtmlOrderElement = orderElement =>
-	[...orderElement.children].map(collumnElement =>
-		collumnElement.innerText.split('\n').filter(isText => isText !== '')
-	);
+export const parseElementOrder = (text) => {
+    if (!text || typeof text !== 'string') {
+        throw new Error('Invalid input data');
+    }
 
-export const convertParsedOrderInfoToObject = order => {
-	const filteredOrderInfo = order.filter(arr => arr.length);
+    const lines = text.split('\n');
+  
+    const transactionRange = lines[5]?.split('-') || [];
+    const minTransaction = parseFloat(transactionRange[0] || '0');
+    const maxTransaction = parseFloat((transactionRange[1] || '0').replace(',', '').replace(' UAH', ''));
+  
+    const dataObject = {
+        id: lines[0] || '',
+        operationType: lines[1] || '',
+        currencyPair: lines[2] || '',
+        rate: parseFloat(lines[3] || '0'),
+        fee: parseFloat(lines[4] || '0'),
+        transactionRange: {
+            min: minTransaction,
+            max: maxTransaction
+        },
+        limit: parseFloat(lines[6] || '0'),
+        bank: lines[8] || '',
+        timeStampCreated: lines[9] || '',
+        timeStampUpdated: lines[10] || '',
+        status: lines[11] || ''
+    };
+  
+    return dataObject;
+}
 
-	try {
-		return {
-			orderId: filteredOrderInfo[0][0],
-			price: filteredOrderInfo[0][3]
-		};
-	} catch (error) {
-		return console.error(error);
-	}
-};
+
+
+  
+const waitForChildElement = (parent, index, timeout = 3000) => {
+    return new Promise((resolve, reject) => {
+        const startTime = Date.now();
+        const intervalId = setInterval(() => {
+            if (Date.now() - startTime > timeout) {
+                clearInterval(intervalId);
+                reject(new Error('Timeout waiting for child element'));
+            }
+
+            if (parent.children && parent.children.length > index) {
+                clearInterval(intervalId);
+                resolve(parent.children[index]);
+            }
+        }, 100);
+    });
+}
+
+export const waitForElement = async (startElement, traversalPath, timeout = 30000) => {
+    return new Promise((resolve, reject) => {
+        const startTime = Date.now();
+
+        const intervalId = setInterval(async () => {
+            if (Date.now() - startTime > timeout) {
+                clearInterval(intervalId);
+                reject(new Error('Timeout reached when waiting for element'));
+                return;
+            }
+
+            if (startElement) {
+                clearInterval(intervalId);
+                let currentElement = startElement;
+
+                try {
+                    for (const step of traversalPath) {
+                        if (!currentElement) {
+                            throw new Error('Current element is null during traversal');
+                        }
+                        
+                        if (step.type === 'parent') {
+                            currentElement = currentElement.parentElement;
+                        } else if (step.type === 'child') {
+                            currentElement = await waitForChildElement(currentElement, step.index);
+                        } // Add more traversal types as needed
+                    }
+
+                    if (currentElement) {
+                        resolve(currentElement);
+                    } else {
+                        throw new Error('Traversal path leads to a null element');
+                    }
+                } catch (error) {
+                    reject(error);
+                }
+            }
+        }, 100);
+    });
+}
