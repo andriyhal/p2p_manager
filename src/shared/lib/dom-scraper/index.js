@@ -102,39 +102,36 @@ export const getOrderList = async () => {
 	return orders;
 };
 
-export const parseElementOrder = (text) => {
-    if (!text || typeof text !== 'string') {
-        throw new Error('Invalid input data');
+export const parseAndValidateOrderData = (idAndAction, amountAndCurrency, banks) => {
+    const [id, actionString, pairString] = idAndAction.split('\n');
+
+    let action = actionString.trim().toUpperCase();
+    if (['КУПІВЛЯ', 'ПОКУПКА', 'BUY'].includes(action)) {
+        action = 'BUY';
+    } else if (['ПРОДАЖ', 'ПРОДАТЬ', 'SELL'].includes(action)) {
+        action = 'SELL';
+    } else {
+        throw new Error('Unknown action');
     }
 
-    const lines = text.split('\n');
-  
-    const transactionRange = lines[5]?.split('-') || [];
-    const minTransaction = parseFloat(transactionRange[0] || '0');
-    const maxTransaction = parseFloat((transactionRange[1] || '0').replace(',', '').replace(' UAH', ''));
-  
-    const dataObject = {
-        id: lines[0] || '',
-        operationType: lines[1] || '',
-        currencyPair: lines[2] || '',
-        rate: parseFloat(lines[3] || '0'),
-        fee: parseFloat(lines[4] || '0'),
-        transactionRange: {
-            min: minTransaction,
-            max: maxTransaction
-        },
-        limit: parseFloat(lines[6] || '0'),
-        bank: lines[8] || '',
-        timeStampCreated: lines[9] || '',
-        timeStampUpdated: lines[10] || '',
-        status: lines[11] || ''
+	const [asset, fiat] = pairString.split('/').map(s => s.trim());
+
+    const amountString = amountAndCurrency.replace(/[^0-9.]/g, ''); 
+    const amount = parseFloat(amountString);
+
+    const banksArray = banks.split(',').map(bank => bank.trim());
+
+    return {
+        id: id.trim(),
+        action: action,
+        pair: {
+			fiat,
+			asset
+		},
+        amount: amount,
+        banks: banksArray
     };
-  
-    return dataObject;
 }
-
-
-
   
 const waitForChildElement = (parent, index, timeout = 3000) => {
     return new Promise((resolve, reject) => {

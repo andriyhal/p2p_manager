@@ -26,19 +26,19 @@ const OrderTrackerFormContainer = styled('div')({
 	gap: '15px'
 });
 
-export const OrderTrackerForm = props => {
+export const OrderTrackerForm = ({parsedDataOrder}) => {
 	const { control, handleSubmit } = useForm();
 	const { isTaskStored } = useTaskLocalStorage();
-	const [isTask, setIsTask] = useState(isTaskStored(props.orderId));
+	const [isTask, setIsTask] = useState(isTaskStored(parsedDataOrder.id));
 
 	const handleSaveTask = submitData => {
-		handleSaveTaskToLocalStorage(submitData, props);
-		setIsTask(isTaskStored(props.orderId));
+		handleSaveTaskToLocalStorage(submitData, parsedDataOrder);
+		setIsTask(isTaskStored(parsedDataOrder.id));
 	};
 
 	const handleDelete = () => {
-		handleDeleteTask(props);
-		setIsTask(isTaskStored(props.orderId));
+		handleDeleteTask(parsedDataOrder);
+		setIsTask(isTaskStored(parsedDataOrder.id));
 		checkOrStopTaskMonitoring();
 	};
 
@@ -46,9 +46,9 @@ export const OrderTrackerForm = props => {
 		<OrderTrackerFormContainer>
 			<FormContainer
 				onSubmit={handleSubmit(handleSaveTask)}
-				id={props.orderId}
+				id={parsedDataOrder.id}
 			>
-				<FormInputsGroup control={control} orderId={props.orderId}/>
+				<FormInputsGroup control={control} orderId={parsedDataOrder.id}/>
 				{isTask ? (
 					<>
 						<EditButton />

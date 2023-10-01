@@ -2,9 +2,9 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { OrderTrackerForm } from './track-order';
 import {
-	parseElementOrder
+	parseAndValidateOrderData,
+	parseElementOrder, waitForElement
 } from '../shared/lib/dom-scraper';
-import { waitForElement } from '../../test/findElementByTraversal';
 
 export const useAddCreateTaskForm = async () => {
 	const traversalPath = [
@@ -26,40 +26,27 @@ export const useAddCreateTaskForm = async () => {
 		20000
 	);
 
-	const todo = await waitForElement(
-		htmlElement,
-		[{type: 'child', index: 2}],
-		20000
-	);
-
-	console.log(todo);
-
-	[...todos.children].forEach(order => {
-		const isOrder = !order.querySelector('input[data-bn-type="checkbox"]');
-		
-		if (isOrder) {
-			return;
-		}
-
-		// const taskControlForm = document.createElement('div');
-		// order.appendChild(taskControlForm);
-		// const root = createRoot(taskControlForm);
-		// root.render(<OrderTrackerForm orderId={orderId} />);
+	const htmlOrders = [...htmlElement.children].filter((child, index) => {
+		if (index > 0) {
+			return child;
+		} else return
 	});
 
-	// getOrderList().then(orders => {
-	// 	[...orders].forEach(order => {
-	// 		const hasId = !!document.getElementById(order.orderId);
-	// 		if (hasId) {
-	// 			return;
-	// 		}
-	// 		const orderId = convertParsedOrderInfoToObject(
-	// 			getTextsFromHtmlOrderElement(order)
-	// 		);
-	// 		const taskControlForm = document.createElement('div');
-	// 		order.appendChild(taskControlForm);
-	// 		const root = createRoot(taskControlForm);
-	// 		root.render(<OrderTrackerForm orderId={orderId} />);
-	// 	});
-	// });
+	for (const startElement of htmlOrders) {
+		const htmlColumnsOrder = await waitForElement(
+				startElement,
+				[{type: 'child', index: 0}, {type: 'child', index: 0}],
+				20000
+		);
+		
+
+		const parsedDataOrder = parseAndValidateOrderData(
+			htmlColumnsOrder.children[0].innerText, htmlColumnsOrder.children[2].innerText, htmlColumnsOrder.children[3].innerText
+		)
+
+		const taskControlForm = document.createElement('div');
+		htmlColumnsOrder.children[htmlColumnsOrder.children.length - 1].appendChild(taskControlForm);
+		const root = createRoot(taskControlForm);
+		root.render(<OrderTrackerForm parsedDataOrder={parsedDataOrder} />);
+	}
 };
