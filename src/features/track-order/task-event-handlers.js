@@ -23,6 +23,6 @@ export const handleSaveTaskToLocalStorage = (submitData, props) => {
 
 export const handleDeleteTask = props => {
 	tasksInfo.saveData(
-		tasksInfo.readData().filter(task => task.orderId !== props.orderId)
+		tasksInfo.readData().filter(task => task.id !== props.id)
 	);
 };

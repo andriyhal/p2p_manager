@@ -1,71 +1,53 @@
-import LocalStorageManager from '../shared/lib/local-storage-manager';
-import { fetchTradersOrders } from '../shared/api';
-import { isLocked } from '../shared/lib/order-locker';
+import { fetchTradersOrders } from "../shared/api";
+import { getNextTask } from "../shared/lib/get-next-task";
 
-const settingsRequestData = new LocalStorageManager('SETTINGS_REQUEST_DATA');
+export const scanP2pOrders = async () => {
+  try {
+    const task = await getNextTask();
+    
+    if (!task) return;
 
-const getTradeType = {
-	BUY: 'SELL',
-	SELL: 'BUY'
-};
+    const { priceLimit, beatBy, id, action, pair, banks } = task;
+    const requestData = {
+      fiat: pair.fiat,
+      page: 1,
+      rows: 10,
+      tradeType: action === 'SELL' ? 'SELL' : 'BUY',
+      asset: pair.asset,
+      countries: [],
+      payTypes: banks,
+      proMerchantAds: false,
+      shieldMerchantAds: false,
+      publisherType: null
+    };
 
-const assetTypes = ['USDT', 'BTC', 'BUSD', 'BNB', 'ETH', 'FDUSD'];
-const getSettingsRequestData = settingsRequestData.readData() || {
-	offsetAsset: 0,
-	offsetPage: 1,
-	tradeType: 'BUY'
-};
-let offsetAsset = getSettingsRequestData.offsetAsset;
-let offsetPage = getSettingsRequestData.offsetPage;
-let tradeType = getSettingsRequestData.tradeType;
+    const response = await fetchTradersOrders(requestData);
+    const orders = response.data;
 
-export const p2pMonitoring = async () => {
-	settingsRequestData.saveData({
-		offsetAsset,
-		offsetPage,
-		tradeType
-	});
-	const requestData = {
-		fiat: 'UAH',
-		page: offsetPage,
-		rows: 10,
-		tradeType: getTradeType[tradeType],
-		asset: assetTypes[offsetAsset],
-		countries: [],
-		payTypes: [],
-		proMerchantAds: false,
-		shieldMerchantAds: false,
-		publisherType: null
-	};
+    const topOrder = orders.find(order => order.adv.advNo !== id);
+    
+    if (!topOrder) {
+      console.log('No orders to compete with or all orders belong to the user');
+      return;
+    }
 
-	try {
-		const { data: orders } = await fetchTradersOrders(requestData);
+    let newPrice;
+    if (action === 'SELL') {
+      newPrice = parseFloat(topOrder.adv.price) - beatBy;
+    console.log({newPrice});
 
-		if (!orders) {
-			throw new Error('Error fetching orders');
-		}
-
-		if (!isLocked()) {
-			if (orders.length > 0) {
-				offsetPage++;
-			} else {
-				if (tradeType === 'BUY') {
-					tradeType = 'SELL';
-					offsetPage = 1;
-				} else {
-					offsetAsset++;
-					if (offsetAsset === assetTypes.length) {
-						offsetAsset = 0;
-					}
-
-					tradeType = 'BUY';
-					offsetPage = 1;
-				}
-			}
-		}
-	} catch (error) {
-		console.error('Error fetching and processing orders:', error);
-	}
-
-	setTimeout(p2pMonitoring, 500);
+      if (newPrice > priceLimit) {
+        
+        console.log(`Setting new price for SELL: ${newPrice}`);
+      }
+    } else {
+      newPrice = parseFloat(topOrder.adv.price) + beatBy;
+      if (newPrice < priceLimit) {
+        
+        console.log(`Setting new price for BUY: ${newPrice}`);
+      }
+    }
+  } catch (error) {
+    console.error('Error while checking and beating price:', error);
+  }
 };

@@ -6,14 +6,14 @@ function useTaskLocalStorage() {
 	const storeTaskAndUpdateIfExists = data => {
 		const existingIndex = tasksInfo
 			.readData()
-			.findIndex(task => task.orderId === data.orderId);
+			.findIndex(task => task.id === data.id);
 
 		if (existingIndex === -1) {
 			tasksInfo.saveData([...tasksInfo.readData(), data]);
 		} else {
 			tasksInfo.saveData(
 				tasksInfo.readData().map(item =>
-					item.orderId === data.orderId
+					item.id === data.id
 						? {
 								...item,
 								priceLimit: data.priceLimit,
@@ -27,7 +27,7 @@ function useTaskLocalStorage() {
 
 	const isTaskStored = orderId => {
 		const storedTasks = tasksInfo.readData() || [];
-		return !!storedTasks.find(task => task.orderId === orderId);
+		return !!storedTasks.find(task => task.id === orderId);
 	};
 
 	return {

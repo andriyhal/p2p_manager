@@ -43,7 +43,7 @@ export const useAddCreateTaskForm = async () => {
 		const parsedDataOrder = parseAndValidateOrderData(
 			htmlColumnsOrder.children[0].innerText, htmlColumnsOrder.children[2].innerText, htmlColumnsOrder.children[3].innerText
 		)
-
+		
 		const taskControlForm = document.createElement('div');
 		htmlColumnsOrder.children[htmlColumnsOrder.children.length - 1].appendChild(taskControlForm);
 		const root = createRoot(taskControlForm);

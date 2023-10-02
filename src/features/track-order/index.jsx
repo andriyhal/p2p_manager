@@ -39,7 +39,6 @@ export const OrderTrackerForm = ({parsedDataOrder}) => {
 	const handleDelete = () => {
 		handleDeleteTask(parsedDataOrder);
 		setIsTask(isTaskStored(parsedDataOrder.id));
-		checkOrStopTaskMonitoring();
 	};
 
 	return (

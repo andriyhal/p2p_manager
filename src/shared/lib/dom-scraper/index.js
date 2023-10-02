@@ -1,4 +1,4 @@
-import { WaitFor } from '../wait-for';
+import { getBankId } from './bankNameMapper';
 
 export const getCurrentPath = () => {
 	const path = document.location.pathname;
@@ -72,36 +72,6 @@ export const getConfirmToPostButton = () =>
 		checkButton();
 	});
 
-export const getOrderList = async () => {
-	const waitFor = new WaitFor(100);
-	let isLoaded = true;
-	let orders = [];
-
-	const updateOrders = () => {
-		const todoElement = document.querySelectorAll('input[type="checkbox"]');
-
-		orders = [...todoElement]
-			.filter(e => e.id === '')
-			.map(
-				elem =>
-					elem.parentElement.parentElement.parentElement.parentElement
-			);
-
-		if (orders.length > 0) {
-			waitFor.stop();
-			isLoaded = false;
-		}
-	};
-
-	waitFor.start(() => updateOrders());
-
-	while (isLoaded) {
-		await new Promise(resolve => setTimeout(resolve, 1000));
-	}
-
-	return orders;
-};
-
 export const parseAndValidateOrderData = (idAndAction, amountAndCurrency, banks) => {
     const [id, actionString, pairString] = idAndAction.split('\n');
 
@@ -119,7 +89,11 @@ export const parseAndValidateOrderData = (idAndAction, amountAndCurrency, banks)
     const amountString = amountAndCurrency.replace(/[^0-9.]/g, ''); 
     const amount = parseFloat(amountString);
 
-    const banksArray = banks.split(',').map(bank => bank.trim());
+    const banksArray = banks.split('\n').map(bank => bank.trim()).filter(bank => {
+		if (getBankId(bank)) {
+			return getBankId(bank)
+		} else return
+	})
 
     return {
         id: id.trim(),
