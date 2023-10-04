@@ -1,7 +1,8 @@
+import { TASKS_INFO_STORAGE_KEY } from '../../shared/config';
 import LocalStorageManager from '../../shared/lib/local-storage-manager';
 
 function useTaskLocalStorage() {
-	const tasksInfo = new LocalStorageManager('tasksInfo');
+	const tasksInfo = new LocalStorageManager(TASKS_INFO_STORAGE_KEY);
 
 	const storeTaskAndUpdateIfExists = data => {
 		const existingIndex = tasksInfo

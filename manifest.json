@@ -1,5 +1,5 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"name": "P2P manager",
 	"description": "A chrome extension for managing p2p orders",
 	"action": {

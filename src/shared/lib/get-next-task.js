@@ -1,5 +1,7 @@
+import { TASKS_INFO_STORAGE_KEY } from "../config";
+
 function* taskGenerator() {
-    const tasksStr = localStorage.getItem('tasksInfo');
+    const tasksStr = localStorage.getItem(TASKS_INFO_STORAGE_KEY);
     if (!tasksStr) return;
     const tasks = JSON.parse(tasksStr);
     const currentIndexStr = localStorage.getItem('currentTaskIndex');

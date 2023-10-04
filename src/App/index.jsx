@@ -5,20 +5,36 @@ import { postOrder } from '../features/edit-order-price';
 import { getCurrentPath } from '../shared/lib/dom-scraper';
 import { scanP2pOrders } from '../features/scan-p2p-orders';
 import { unlockOrder } from '../shared/lib/order-locker';
+import {
+	EDIT_PRICE_STORAGE_KEY,
+	TASKS_INFO_STORAGE_KEY
+} from '../shared/config';
+import { delayedTaskRunner } from '../shared/lib/delayed-task-runner';
 
-const priceData = new LocalStorageManager('priceData');
+const editPrice = new LocalStorageManager(EDIT_PRICE_STORAGE_KEY);
 
-const tasksInfo = new LocalStorageManager('tasksInfo');
+const tasksInfo = new LocalStorageManager(TASKS_INFO_STORAGE_KEY);
 tasksInfo.saveData(tasksInfo.readData() ? tasksInfo.readData() : []);
+const taskRunner = delayedTaskRunner(1000);
 
 const App = () => {
-	if (getCurrentPath() === 'advEdit' && !!priceData.readData()) {
-		postOrder();
-	}
+	const init = async () => {
+		const result = await useAddCreateTaskForm();
+		if (result) {
+			taskRunner.start(scanP2pOrders);
+		}
+	};
 
-	if (getCurrentPath() === 'myads' && !priceData.readData()) {
-		useAddCreateTaskForm();
-		scanP2pOrders();
+	switch (getCurrentPath()) {
+		case 'advEdit':
+			editPrice.readData() && postOrder();
+			break;
+		case 'myads':
+			init();
+			break;
+		default:
+			console.log('No matching path found');
+			break;
 	}
 
 	unlockOrder();

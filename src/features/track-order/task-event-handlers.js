@@ -1,10 +1,12 @@
+import { TASKS_INFO_STORAGE_KEY } from '../../shared/config';
 import LocalStorageManager from '../../shared/lib/local-storage-manager';
 import useTaskLocalStorage from './use-task-local-storage';
 
-const tasksInfo = new LocalStorageManager('tasksInfo');
+const tasksInfo = new LocalStorageManager(TASKS_INFO_STORAGE_KEY);
 
 export const handleSaveTaskToLocalStorage = (submitData, props) => {
 	const { storeTaskAndUpdateIfExists } = useTaskLocalStorage();
+
 	const stringWithoutCommasPriceLimit = submitData.priceLimit.replace(
 		/,/g,
 		''

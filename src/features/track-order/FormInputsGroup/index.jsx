@@ -1,8 +1,9 @@
 import React from 'react';
 import { FormInputText } from '../FormInputText';
+import { TASKS_INFO_STORAGE_KEY } from '../../../shared/config';
 
 export const FormInputsGroup = ({ control, orderId }) => {
-	const tasksInfo = JSON.parse(localStorage.getItem('tasksInfo') || []);
+	const tasksInfo = JSON.parse(localStorage.getItem(TASKS_INFO_STORAGE_KEY) || []);
 	const [ task ] = tasksInfo.filter(task => task.orderId === orderId);
 	return (
 		<>

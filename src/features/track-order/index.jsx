@@ -10,6 +10,7 @@ import {
 	handleSaveTaskToLocalStorage
 } from './task-event-handlers';
 import { FormInputsGroup } from './FormInputsGroup';
+import { updateAmountById } from '../update-amount-by-id';
 
 const FormContainer = styled('form')({
 	position: 'absolute',
@@ -26,7 +27,7 @@ const OrderTrackerFormContainer = styled('div')({
 	gap: '15px'
 });
 
-export const OrderTrackerForm = ({parsedDataOrder}) => {
+export const OrderTrackerForm = ({ parsedDataOrder }) => {
 	const { control, handleSubmit } = useForm();
 	const { isTaskStored } = useTaskLocalStorage();
 	const [isTask, setIsTask] = useState(isTaskStored(parsedDataOrder.id));
@@ -41,13 +42,18 @@ export const OrderTrackerForm = ({parsedDataOrder}) => {
 		setIsTask(isTaskStored(parsedDataOrder.id));
 	};
 
+	updateAmountById(parsedDataOrder.id, parsedDataOrder.amount);
+
 	return (
 		<OrderTrackerFormContainer>
 			<FormContainer
 				onSubmit={handleSubmit(handleSaveTask)}
 				id={parsedDataOrder.id}
 			>
-				<FormInputsGroup control={control} orderId={parsedDataOrder.id}/>
+				<FormInputsGroup
+					control={control}
+					orderId={parsedDataOrder.id}
+				/>
 				{isTask ? (
 					<>
 						<EditButton />
