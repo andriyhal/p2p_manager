@@ -15,9 +15,9 @@ const editPrice = new LocalStorageManager(EDIT_PRICE_STORAGE_KEY);
 
 const tasksInfo = new LocalStorageManager(TASKS_INFO_STORAGE_KEY);
 tasksInfo.saveData(tasksInfo.readData() ? tasksInfo.readData() : []);
-const taskRunner = delayedTaskRunner(1000);
 
 const App = () => {
+	const taskRunner = delayedTaskRunner(1000);
 	const init = async () => {
 		const result = await useAddCreateTaskForm();
 		if (result) {

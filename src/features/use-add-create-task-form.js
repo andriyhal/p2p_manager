@@ -44,19 +44,22 @@ export const useAddCreateTaskForm = async () => {
 				[{ type: 'child', index: 0 }],
 				20000
 			);
+			if (htmlColumnsOrder.children.length < 8) {
+				const parsedDataOrder = parseAndValidateOrderData(
+					htmlColumnsOrder.children[0].innerText,
+					htmlColumnsOrder.children[2].innerText,
+					htmlColumnsOrder.children[3].innerText
+				);
 
-			const parsedDataOrder = parseAndValidateOrderData(
-				htmlColumnsOrder.children[0].innerText,
-				htmlColumnsOrder.children[2].innerText,
-				htmlColumnsOrder.children[3].innerText
-			);
-
-			const taskControlForm = document.createElement('div');
-			htmlColumnsOrder.children[
-				htmlColumnsOrder.children.length - 1
-			].appendChild(taskControlForm);
-			const root = createRoot(taskControlForm);
-			root.render(<OrderTrackerForm parsedDataOrder={parsedDataOrder} />);
+				const taskControlForm = document.createElement('div');
+				htmlColumnsOrder.children[
+					htmlColumnsOrder.children.length - 1
+				].appendChild(taskControlForm);
+				const root = createRoot(taskControlForm);
+				root.render(
+					<OrderTrackerForm parsedDataOrder={parsedDataOrder} />
+				);
+			}
 		}
 	} catch (error) {
 		console.log(error);

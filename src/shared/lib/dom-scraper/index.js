@@ -72,95 +72,113 @@ export const getConfirmToPostButton = () =>
 		checkButton();
 	});
 
-export const parseAndValidateOrderData = (idAndAction, amountAndCurrency, banks) => {
-    const [id, actionString, pairString] = idAndAction.split('\n');
+export const parseAndValidateOrderData = (
+	idAndAction,
+	amountAndCurrency,
+	banks
+) => {
+	const [id, actionString, pairString] = idAndAction.split('\n');
 
-    let action = actionString.trim().toUpperCase();
-    if (['КУПІВЛЯ', 'ПОКУПКА', 'BUY'].includes(action)) {
-        action = 'BUY';
-    } else if (['ПРОДАЖ', 'ПРОДАТЬ', 'SELL'].includes(action)) {
-        action = 'SELL';
-    } else {
-        throw new Error('Unknown action');
-    }
+	let action = actionString.trim().toUpperCase();
+	if (['КУПІВЛЯ', 'ПОКУПКА', 'BUY'].includes(action)) {
+		action = 'SELL';
+	} else if (['ПРОДАЖ', 'ПРОДАТЬ', 'SELL'].includes(action)) {
+		action = 'BUY';
+	} else {
+		throw new Error('Unknown action');
+	}
 
 	const [asset, fiat] = pairString.split('/').map(s => s.trim());
 
-    const amountString = amountAndCurrency.replace(/[^0-9.]/g, ''); 
-    const amount = parseFloat(amountString);
+	const amountString = amountAndCurrency.replace(/[^0-9.]/g, '');
+	const amount = parseFloat(amountString);
 
-    const banksArray = banks.split('\n').map(bank => bank.trim()).filter(bank => {
-		if (getBankId(bank)) {
-			return getBankId(bank)
-		} else return
-	})
+	const banksArray = banks
+		.split('\n')
+		.map(bank => bank.trim())
+		.filter(bank => {
+			if (getBankId(bank)) {
+				return getBankId(bank);
+			} else return;
+		});
 
-    return {
-        id: id.trim(),
-        action: action,
-        pair: {
+	return {
+		id: id.trim(),
+		action: action,
+		pair: {
 			fiat,
 			asset
 		},
-        amount: amount,
-        banks: banksArray
-    };
-}
-  
+		amount: amount,
+		banks: banksArray
+	};
+};
+
 const waitForChildElement = (parent, index, timeout = 3000) => {
-    return new Promise((resolve, reject) => {
-        const startTime = Date.now();
-        const intervalId = setInterval(() => {
-            if (Date.now() - startTime > timeout) {
-                clearInterval(intervalId);
-                reject(new Error('Timeout waiting for child element'));
-            }
+	return new Promise((resolve, reject) => {
+		const startTime = Date.now();
+		const intervalId = setInterval(() => {
+			if (Date.now() - startTime > timeout) {
+				clearInterval(intervalId);
+				reject(new Error('Timeout waiting for child element'));
+			}
 
-            if (parent.children && parent.children.length > index) {
-                clearInterval(intervalId);
-                resolve(parent.children[index]);
-            }
-        }, 100);
-    });
-}
+			if (parent.children && parent.children.length > index) {
+				clearInterval(intervalId);
+				resolve(parent.children[index]);
+			}
+		}, 100);
+	});
+};
 
-export const waitForElement = async (startElement, traversalPath, timeout = 30000) => {
-    return new Promise((resolve, reject) => {
-        const startTime = Date.now();
+export const waitForElement = async (
+	startElement,
+	traversalPath,
+	timeout = 30000
+) => {
+	return new Promise((resolve, reject) => {
+		const startTime = Date.now();
 
-        const intervalId = setInterval(async () => {
-            if (Date.now() - startTime > timeout) {
-                clearInterval(intervalId);
-                reject(new Error('Timeout reached when waiting for element'));
-                return;
-            }
+		const intervalId = setInterval(async () => {
+			if (Date.now() - startTime > timeout) {
+				clearInterval(intervalId);
+				reject(new Error('Timeout reached when waiting for element'));
+				return;
+			}
 
-            if (startElement) {
-                clearInterval(intervalId);
-                let currentElement = startElement;
+			if (startElement) {
+				clearInterval(intervalId);
+				let currentElement = startElement;
 
-                try {
-                    for (const step of traversalPath) {
-                        if (!currentElement) {
-                            throw new Error('Current element is null during traversal');
-                        }
-                        
-                        if (step.type === 'parent') {
-                            currentElement = currentElement.parentElement;
-                        } else if (step.type === 'child') {
-                            currentElement = await waitForChildElement(currentElement, step.index);
-                        } // Add more traversal types as needed
-                    }
+				try {
+					for (const step of traversalPath) {
+						if (!currentElement) {
+							throw new Error(
+								'Current element is null during traversal'
+							);
+						}
 
-                    if (currentElement) {
-                        resolve(currentElement);
-                    } else {
-                        throw new Error('Traversal path leads to a null element');
-                    }
-                } catch (error) {
-                    reject(error);
-                }
-            }
-        }, 100);
-    });
-}
+						if (step.type === 'parent') {
+							currentElement = currentElement.parentElement;
+						} else if (step.type === 'child') {
+							currentElement = await waitForChildElement(
+								currentElement,
+								step.index
+							);
+						} // Add more traversal types as needed
+					}
+
+					if (currentElement) {
+						resolve(currentElement);
+					} else {
+						throw new Error(
+							'Traversal path leads to a null element'
+						);
+					}
+				} catch (error) {
+					reject(error);
+				}
+			}
+		}, 100);
+	});
+};

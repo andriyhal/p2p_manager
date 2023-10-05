@@ -2,64 +2,133 @@ import { fetchTradersOrders } from '../shared/api';
 import { processNextTask } from '../shared/lib/task-queue';
 import { nextToEditOrder } from './edit-order-price';
 
+let task = processNextTask();
+let page = 1;
+
 export const scanP2pOrders = async () => {
-	try {
-		const task = processNextTask();
+	const { priceLimit, beatBy, id, action, pair, amount, banks } = task;
 
-		if (!task) return;
+	const requestData = {
+		fiat: pair.fiat,
+		page: page,
+		rows: 10,
+		tradeType: action,
+		asset: pair.asset,
+		countries: [],
+		payTypes: banks,
+		proMerchantAds: false,
+		shieldMerchantAds: false,
+		publisherType: null
+	};
+	await new Promise(res => setTimeout(res, 500));
+	let newPrice = 0;
+	const { data: orders } = await fetchTradersOrders(requestData);
+	if (!orders.length) {
+		task = processNextTask();
+		page = 1;
+	}
 
-		const { priceLimit, beatBy, id, action, pair, amount, banks } = task;
-		const requestData = {
-			fiat: pair.fiat,
-			page: 1,
-			rows: 10,
-			tradeType: action === 'SELL' ? 'SELL' : 'BUY',
-			asset: pair.asset,
-			countries: [],
-			payTypes: banks,
-			proMerchantAds: false,
-			shieldMerchantAds: false,
-			publisherType: null
-		};
+	const [order] = [...orders].filter(order => order.adv.advNo === id);
 
-		const response = await fetchTradersOrders(requestData);
-		const orders = response.data;
-
-		const topOrder = orders.find(order => order.adv.advNo !== id);
-
-		if (!topOrder) {
-			console.log(
-				'No orders to compete with or all orders belong to the user'
-			);
-			return;
-		}
-
-		let newPrice;
-		if (action === 'SELL') {
-			newPrice = parseFloat(topOrder.adv.price) - beatBy;
-			console.log('working...');
+	if (!order) {
+		while (orders.length) {
+			const order = orders.pop();
 
 			if (
-				newPrice > priceLimit &&
-				parseFloat(newPrice.toFixed(2)) !== amount
+				order.adv.tradeType === 'SELL' &&
+				amount > order.adv.price &&
+				order.adv.price > priceLimit
 			) {
-				console.log(`Setting new price for SELL: ${newPrice}`);
-
-				nextToEditOrder(id, newPrice);
+				newPrice = order.adv.price - beatBy;
 			}
-		} else {
-			newPrice = parseFloat(topOrder.adv.price) + beatBy;
 
 			if (
-				newPrice < priceLimit &&
-				parseFloat(newPrice.toFixed(2)) !== amount
+				order.adv.tradeType === 'BUY' &&
+				amount < order.adv.price &&
+				order.adv.price < priceLimit
 			) {
-				console.log(`Setting new price for BUY: ${newPrice}`);
-
-				// nextToEditOrder(id, newPrice);
+				newPrice = order.adv.price + beatBy;
 			}
 		}
-	} catch (error) {
-		console.error('Error while checking and beating price:', error);
+		// debugger;
+		page++;
+		console.log(page);
+	}
+
+	if (amount !== newPrice && newPrice > 0) {
+		nextToEditOrder(id, newPrice);
 	}
 };
+
+// try {
+// 	let foundOrder = false;
+
+// 	while (!foundOrder) {
+// 		const requestData = {
+// 			fiat: pair.fiat,
+// 			page: page,
+// 			rows: 10,
+// 			tradeType: action,
+// 			asset: pair.asset,
+// 			countries: [],
+// 			payTypes: banks,
+// 			proMerchantAds: false,
+// 			shieldMerchantAds: false,
+// 			publisherType: null
+// 		};
+
+// 		if (!foundOrder) {
+// 			await new Promise(res => setTimeout(res, 500));
+// 		}
+
+// 		const response = await fetchTradersOrders(requestData);
+// 		const orders = response.data;
+
+// 		if (!orders || orders.length === 0) {
+// 			console.log(`No more orders found, exiting. ${page}`);
+// 			break;
+// 		}
+
+// 		function sellCheck(order) {
+// 			let newPrice = parseFloat(order.adv.price) - beatBy;
+
+// 			return (
+// 				order.adv.price < priceLimit &&
+// 				newPrice > priceLimit &&
+// 				parseFloat(newPrice.toFixed(2)) !== amount
+// 			);
+// 		}
+
+// 		function buyCheck(order) {
+// 			let newPrice = parseFloat(order.adv.price) + beatBy;
+// 			return (
+// 				order.adv.price > priceLimit &&
+// 				newPrice < priceLimit &&
+// 				parseFloat(newPrice.toFixed(2)) !== amount
+// 			);
+// 		}
+
+// 		const orderToBeat = orders.find(
+// 			order =>
+// 				order.adv.advNo !== id &&
+// 				(action === 'BUY' ? sellCheck(order) : buyCheck(order))
+// 		);
+
+// 		if (orderToBeat) {
+// 			let newPrice =
+// 				action === 'SELL'
+// 					? parseFloat(orderToBeat.adv.price) - beatBy
+// 					: parseFloat(orderToBeat.adv.price) + beatBy;
+// 			console.log(`Setting new price for ${action}: ${newPrice}`);
+// 			foundOrder = true;
+// 			nextToEditOrder(id);
+// 		} else {
+// 			page++;
+// 		}
+// 	}
+
+// 	return foundOrder;
+// } catch (error) {
+// 	console.error('Error while checking and beating price:', error);
+// 	return false;
+// }
