@@ -6,8 +6,8 @@ import { OrderItem } from './OrderItem';
 const styles = {
 	editor: {
 		display: 'flex',
-		flexDirection: 'column',
 		alignItems: 'center',
+		justifyContent: 'center',
 		marginTop: '20px'
 	},
 	resetButton: {
@@ -18,22 +18,24 @@ const styles = {
 	}
 };
 
-export const OrderEditor = () => {
+export const OrderUpdateCounter = () => {
 	const { tasksInfo, updateCounts, resetUpdateCounts } =
 		useOrderUpdateTracker();
 
 	return (
-		<div style={styles.editor}>
-			{tasksInfo.map(order => (
-				<OrderItem
-					key={order.id}
-					order={order}
-					countUpdate={updateCounts[order.id]}
-				/>
-			))}
+		<>
+			<div style={styles.editor}>
+				{tasksInfo.map(order => (
+					<OrderItem
+						key={order.id}
+						order={order}
+						countUpdate={updateCounts[order.id]}
+					/>
+				))}
+			</div>
 			<button style={styles.resetButton} onClick={resetUpdateCounts}>
 				Reset Count Updates
 			</button>
-		</div>
+		</>
 	);
 };

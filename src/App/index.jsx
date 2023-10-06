@@ -10,6 +10,7 @@ import {
 	TASKS_INFO_STORAGE_KEY
 } from '../shared/config';
 import { delayedTaskRunner } from '../shared/lib/delayed-task-runner';
+import { OrderUpdateCounter } from '../features/OrderEditor';
 
 const editPrice = new LocalStorageManager(EDIT_PRICE_STORAGE_KEY);
 
@@ -20,6 +21,7 @@ const App = () => {
 	const taskRunner = delayedTaskRunner(1000);
 	const init = async () => {
 		const result = await useAddCreateTaskForm();
+
 		if (result) {
 			taskRunner.start(scanP2pOrders);
 		}
@@ -42,6 +44,7 @@ const App = () => {
 	return (
 		<div>
 			<button onClick={() => taskRunner.stop()}>Stop bot</button>
+			<OrderUpdateCounter />
 		</div>
 	);
 };
