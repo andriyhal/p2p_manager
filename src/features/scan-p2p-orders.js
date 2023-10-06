@@ -52,7 +52,7 @@ export const scanP2pOrders = async () => {
 		}
 		// debugger;
 		page++;
-		console.log(page);
+		console.log(pair.asset);
 	}
 
 	if (amount !== newPrice && newPrice > 0) {

@@ -39,7 +39,11 @@ const App = () => {
 
 	unlockOrder();
 
-	return <div></div>;
+	return (
+		<div>
+			<button onClick={() => taskRunner.stop()}>Stop bot</button>
+		</div>
+	);
 };
 
 export default App;
