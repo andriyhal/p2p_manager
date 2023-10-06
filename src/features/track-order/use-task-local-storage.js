@@ -1,23 +1,24 @@
-import LocalStorageManager from '../utils/local-storage-manager';
+import { TASKS_INFO_STORAGE_KEY } from '../../shared/config';
+import LocalStorageManager from '../../shared/lib/local-storage-manager';
 
 function useTaskLocalStorage() {
-	const tasksInfo = new LocalStorageManager('tasksInfo');
+	const tasksInfo = new LocalStorageManager(TASKS_INFO_STORAGE_KEY);
 
 	const storeTaskAndUpdateIfExists = data => {
 		const existingIndex = tasksInfo
 			.readData()
-			.findIndex(task => task.orderId === data.orderId);
+			.findIndex(task => task.id === data.id);
 
 		if (existingIndex === -1) {
 			tasksInfo.saveData([...tasksInfo.readData(), data]);
 		} else {
 			tasksInfo.saveData(
 				tasksInfo.readData().map(item =>
-					item.orderId === data.orderId
+					item.id === data.id
 						? {
 								...item,
-								priceThreshold: data.priceThreshold,
-								targetOrderAmount: data.targetOrderAmount
+								priceLimit: data.priceLimit,
+								beatBy: data.beatBy
 						  }
 						: item
 				)
@@ -27,7 +28,7 @@ function useTaskLocalStorage() {
 
 	const isTaskStored = orderId => {
 		const storedTasks = tasksInfo.readData() || [];
-		return !!storedTasks.find(task => task.orderId === orderId);
+		return !!storedTasks.find(task => task.id === orderId);
 	};
 
 	return {

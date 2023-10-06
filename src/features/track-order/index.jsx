@@ -10,6 +10,7 @@ import {
 	handleSaveTaskToLocalStorage
 } from './task-event-handlers';
 import { FormInputsGroup } from './FormInputsGroup';
+import { updateAmountById } from '../update-amount-by-id';
 
 const FormContainer = styled('form')({
 	position: 'absolute',
@@ -20,35 +21,39 @@ const FormContainer = styled('form')({
 	bottom: '10px'
 });
 
-const P2PTrackerFormContainer = styled('div')({
+const OrderTrackerFormContainer = styled('div')({
 	display: 'flex',
 	flexDirection: 'column',
 	gap: '15px'
 });
 
-export const P2PTrackerForm = props => {
+export const OrderTrackerForm = ({ parsedDataOrder }) => {
 	const { control, handleSubmit } = useForm();
 	const { isTaskStored } = useTaskLocalStorage();
-	const [isTask, setIsTask] = useState(isTaskStored(props.orderId));
+	const [isTask, setIsTask] = useState(isTaskStored(parsedDataOrder.id));
 
 	const handleSaveTask = submitData => {
-		handleSaveTaskToLocalStorage(submitData, props);
-		setIsTask(isTaskStored(props.orderId));
+		handleSaveTaskToLocalStorage(submitData, parsedDataOrder);
+		setIsTask(isTaskStored(parsedDataOrder.id));
 	};
 
 	const handleDelete = () => {
-		handleDeleteTask(props);
-		setIsTask(isTaskStored(props.orderId));
-		checkOrStopTaskMonitoring();
+		handleDeleteTask(parsedDataOrder);
+		setIsTask(isTaskStored(parsedDataOrder.id));
 	};
 
+	updateAmountById(parsedDataOrder.id, parsedDataOrder.amount);
+
 	return (
-		<P2PTrackerFormContainer>
+		<OrderTrackerFormContainer>
 			<FormContainer
 				onSubmit={handleSubmit(handleSaveTask)}
-				id={props.orderId}
+				id={parsedDataOrder.id}
 			>
-				<FormInputsGroup control={control} orderId={props.orderId}/>
+				<FormInputsGroup
+					control={control}
+					orderId={parsedDataOrder.id}
+				/>
 				{isTask ? (
 					<>
 						<EditButton />
@@ -58,6 +63,6 @@ export const P2PTrackerForm = props => {
 					<PlusButton />
 				)}
 			</FormContainer>
-		</P2PTrackerFormContainer>
+		</OrderTrackerFormContainer>
 	);
 };

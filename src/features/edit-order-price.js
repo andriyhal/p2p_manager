@@ -1,22 +1,22 @@
+import { EDIT_PRICE_STORAGE_KEY } from '../shared/config';
 import {
 	getConfirmToPostButton,
 	getInputEditPrice,
 	getPostButton
-} from '../dom-scraper';
-import LocalStorageManager from '../utils/local-storage-manager';
-import { unlockOrder } from '../utils/order-locker';
+} from '../shared/lib/dom-scraper';
+import LocalStorageManager from '../shared/lib/local-storage-manager';
+import { unlockOrder } from '../shared/lib/order-locker';
+import { updateAmountById } from './update-amount-by-id';
 
-export const nextToEditOrder = (orderId, newPrice) => {
-	const priceData = new LocalStorageManager('priceData');
-	priceData.saveData({ orderId, newPrice });
-	
-	
-	document.location.href =
-		'https://p2p.binance.com/en/advEdit?code=' + orderId;
+export const nextToEditOrder = (id, newPrice) => {
+	const editPrice = new LocalStorageManager(EDIT_PRICE_STORAGE_KEY);
+	editPrice.saveData({ id, newPrice });
+
+	document.location.href = 'https://p2p.binance.com/en/advEdit?code=' + id;
 };
 
 export const postOrder = async () => {
-	const storageManager = new LocalStorageManager('priceData');
+	const storageManager = new LocalStorageManager(EDIT_PRICE_STORAGE_KEY);
 	const data = storageManager.readData();
 
 	const priceInputElement = await getInputEditPrice();

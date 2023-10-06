@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import runOnWindowLoad from './utils/run-on-window-load';
+import runOnWindowLoad from './shared/lib/run-on-window-load';
 
 runOnWindowLoad(() => {
 	const newElement = document.createElement('div');
