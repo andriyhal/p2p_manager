@@ -10,7 +10,7 @@ import {
 	TASKS_INFO_STORAGE_KEY
 } from '../shared/config';
 import { delayedTaskRunner } from '../shared/lib/delayed-task-runner';
-import { OrderUpdateCounter } from '../features/OrderEditor';
+import { OrderUpdateCounter } from '../features/OrderUpdateCounter';
 
 const editPrice = new LocalStorageManager(EDIT_PRICE_STORAGE_KEY);
 

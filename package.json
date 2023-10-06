@@ -2,7 +2,7 @@
 	"name": "webpack-babel-react",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"main": "content.js",
 	"scripts": {
 		"start": "react-scripts start",
 		"dev": "webpack --watch",
