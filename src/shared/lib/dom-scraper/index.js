@@ -80,7 +80,7 @@ export const parseAndValidateOrderData = (
 	const [id, actionString, pairString] = idAndAction.split('\n');
 
 	let action = actionString.trim().toUpperCase();
-	if (['КУПІВЛЯ', 'ПОКУПКА', 'BUY'].includes(action)) {
+	if (['КУПІВЛЯ', 'КУПИТЬ', 'BUY'].includes(action)) {
 		action = 'SELL';
 	} else if (['ПРОДАЖ', 'ПРОДАТЬ', 'SELL'].includes(action)) {
 		action = 'BUY';

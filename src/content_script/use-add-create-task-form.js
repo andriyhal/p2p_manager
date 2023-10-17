@@ -6,6 +6,7 @@ import {
 	parseElementOrder,
 	waitForElement
 } from '../shared/lib/dom-scraper';
+import { deleteTaskById } from './delete_task_by_id';
 
 export const useAddCreateTaskForm = async () => {
 	const traversalPath = [
@@ -44,6 +45,17 @@ export const useAddCreateTaskForm = async () => {
 				[{ type: 'child', index: 0 }],
 				20000
 			);
+
+			if (htmlColumnsOrder.children[0].innerText === '') {
+				deleteTaskById(
+					parseAndValidateOrderData(
+						htmlColumnsOrder.children[1].innerText,
+						htmlColumnsOrder.children[3].innerText,
+						htmlColumnsOrder.children[4].innerText
+					).id
+				);
+			}
+
 			if (htmlColumnsOrder.children.length < 8) {
 				const parsedDataOrder = parseAndValidateOrderData(
 					htmlColumnsOrder.children[0].innerText,

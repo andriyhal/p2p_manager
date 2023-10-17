@@ -3,6 +3,8 @@ export const delayedTaskRunner = sleep => {
 
 	const start = callback => {
 		const update = () => {
+			const date = new Date();
+
 			if (!terminate) {
 				setTimeout(() => {
 					callback();

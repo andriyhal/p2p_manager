@@ -24,6 +24,8 @@ function useTaskLocalStorage() {
 				)
 			);
 		}
+
+		return tasksInfo.readData().filter(task => task.id === data.id);
 	};
 
 	const isTaskStored = orderId => {

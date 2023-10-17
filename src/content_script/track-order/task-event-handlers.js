@@ -6,16 +6,21 @@ const tasksInfo = new LocalStorageManager(TASKS_INFO_STORAGE_KEY);
 
 export const handleSaveTaskToLocalStorage = (submitData, props) => {
 	const { storeTaskAndUpdateIfExists } = useTaskLocalStorage();
+	let stringWithoutCommasPriceLimit;
+	let parsedNumberPriceLimit = submitData.priceLimit;
+	let stringWithoutCommasBeatBy;
+	let parsedNumberBeatBy = submitData.beatBy;
 
-	const stringWithoutCommasPriceLimit = submitData.priceLimit.replace(
-		/,/g,
-		''
-	);
-	const parsedNumberPriceLimit = parseFloat(stringWithoutCommasPriceLimit);
+	if (typeof submitData.priceLimit === 'string') {
+		stringWithoutCommasPriceLimit = submitData.priceLimit.replace(/,/g, '');
+		parsedNumberPriceLimit = parseFloat(stringWithoutCommasPriceLimit);
+	}
 
-	const stringWithoutCommasBeatBy = submitData.beatBy.replace(/,/g, '');
-	const parsedNumberBeatBy = parseFloat(stringWithoutCommasBeatBy);
-
+	if (typeof submitData.beatBy === 'string') {
+		stringWithoutCommasBeatBy = submitData.beatBy.replace(/,/g, '');
+		parsedNumberBeatBy = parseFloat(stringWithoutCommasBeatBy);
+	}
+	debugger;
 	storeTaskAndUpdateIfExists({
 		priceLimit: parsedNumberPriceLimit,
 		beatBy: parsedNumberBeatBy,
