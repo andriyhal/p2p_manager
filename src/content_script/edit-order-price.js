@@ -1,9 +1,10 @@
 import {
+	findButtonByText,
 	getConfirmToPostButton,
 	getInputEditPrice,
-	getPostButton
+	getPostButton,
+	waitForElement
 } from '../shared/lib/dom-scraper';
-import { unlockOrder } from '../shared/lib/order-locker';
 
 export const postOrder = async newPrice => {
 	const priceInputElement = await getInputEditPrice();
@@ -23,27 +24,24 @@ export const postOrder = async newPrice => {
 	priceInputElement.dispatchEvent(event);
 
 	setTimeout(async () => {
-		const postButton = await getPostButton();
-		postButton.click();
-		const confirmButton = await getConfirmToPostButton();
-		confirmButton.click();
+		try {
+			const buttonPost = await findButtonByText([
+				'Post',
+				'Text2',
+				'Text3'
+			]);
 
-		chrome.runtime.onMessage.addListener(
-			(request, sender, sendResponse) => {
-				if (request.action === 'EDIT_PRICE') {
-					chrome.runtime.sendMessage(
-						{
-							action: 'CLOSE_WINDOW',
-							type: 'CONTENT',
-							tasks:
-								JSON.parse(localStorage.getItem('tasksInfo')) ||
-								[],
-							windowId: request.windowId
-						},
-						response => console.log(response)
-					);
-				}
-			}
-		);
+			buttonPost.click();
+
+			const buttonConfirm = await findButtonByText([
+				'Confirm to post',
+				'Text2',
+				'Text3'
+			]);
+
+			buttonConfirm.click();
+		} catch (error) {
+			console.error('Error:', error);
+		}
 	}, 1000);
 };

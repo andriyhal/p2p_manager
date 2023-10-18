@@ -26,7 +26,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				Tasks.addTask(task);
 			}
 		}
-		console.log(Tasks.getList());
+
+		Tasks.setStatusUpdatePrice(false);
 		chrome.windows.remove(message.windowId);
 	}
 });

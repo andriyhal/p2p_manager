@@ -5,6 +5,7 @@ import { getCurrentPath } from '../../shared/lib/dom-scraper';
 import { unlockOrder } from '../../shared/lib/order-locker';
 import { delayedTaskRunner } from '../../shared/lib/delayed-task-runner';
 import { OrderUpdateCounter } from '../OrderUpdateCounter';
+import { updateAmountById } from '../update-amount-by-id';
 
 const App = () => {
 	const taskRunner = delayedTaskRunner(1000);
@@ -16,12 +17,22 @@ const App = () => {
 		}
 	};
 
-	chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-		if (message.action === 'editPrice') {
-			postOrder(message.newPrice);
+	chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+		if (request.action === 'EDIT_PRICE') {
+			postOrder(request.newPrice);
 
-			window.addEventListener('load', function () {
-				chrome.runtime.sendMessage({ action: 'closeTab' });
+			window.addEventListener('beforeunload', event => {
+				updateAmountById(request.id, request.newPrice);
+				chrome.runtime.sendMessage(
+					{
+						action: 'CLOSE_WINDOW',
+						type: 'CONTENT',
+						tasks:
+							JSON.parse(localStorage.getItem('tasksInfo')) || [],
+						windowId: request.windowId
+					},
+					response => console.log(response)
+				);
 			});
 		}
 	});
@@ -35,7 +46,7 @@ const App = () => {
 	return (
 		<div>
 			<button onClick={() => taskRunner.stop()}>Stop bot</button>
-			<OrderUpdateCounter />
+			{/* <OrderUpdateCounter /> */}
 		</div>
 	);
 };

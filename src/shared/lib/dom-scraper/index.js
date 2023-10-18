@@ -114,6 +114,36 @@ export const parseAndValidateOrderData = (
 	};
 };
 
+export const findButtonByText = (textArray, timeout = 5000, interval = 100) => {
+	return new Promise((resolve, reject) => {
+		const startTime = Date.now();
+
+		const checkButton = () => {
+			const buttons = document.querySelectorAll('button');
+
+			for (let button of buttons) {
+				for (let text of textArray) {
+					if (button.textContent.trim().includes(text.trim())) {
+						console.log('Button found:', button);
+						resolve(button);
+						return;
+					}
+				}
+			}
+
+			if (Date.now() - startTime > timeout) {
+				console.log('Button not found');
+				reject(new Error('Timeout exceeded'));
+				return;
+			}
+
+			setTimeout(checkButton, interval);
+		};
+
+		checkButton();
+	});
+};
+
 const waitForChildElement = (parent, index, timeout = 3000) => {
 	return new Promise((resolve, reject) => {
 		const startTime = Date.now();

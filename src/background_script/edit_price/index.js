@@ -11,6 +11,7 @@ export const editPrice = (id, newPrice, action) => {
 					action,
 					type: 'BACKGROUND',
 					newPrice,
+					id,
 					windowId: window.id
 				});
 			}

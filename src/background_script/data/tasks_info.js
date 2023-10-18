@@ -1,4 +1,6 @@
 const tasksInfo = [];
+let currentTask = {};
+let statusUpdatePrice = false;
 
 export class Tasks {
 	static currentIndex = 0; // переменная для отслеживания текущего индекса
@@ -43,5 +45,13 @@ export class Tasks {
 		Tasks.currentIndex = (Tasks.currentIndex + 1) % tasksInfo.length;
 
 		return task;
+	}
+
+	static setStatusUpdatePrice(value = false) {
+		statusUpdatePrice = value;
+	}
+
+	static getStatusUpdatePrice() {
+		return statusUpdatePrice;
 	}
 }
