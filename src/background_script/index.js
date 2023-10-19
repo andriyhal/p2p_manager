@@ -7,13 +7,11 @@ const runner = delayedTaskRunner(1000);
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.action === 'START_BOT') {
 		runner.start(scanP2pOrders);
-		sendResponse({ action: 'STOP_BOT' });
 		getTasks(message.action);
 	}
 
 	if (message.action === 'STOP_BOT') {
 		runner.stop();
-		sendResponse({ action: 'START_BOT' });
 	}
 
 	if (message.action === 'UPDATE_TASKSINFO') {

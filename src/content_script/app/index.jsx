@@ -45,8 +45,7 @@ const App = () => {
 
 	return (
 		<div>
-			<button onClick={() => taskRunner.stop()}>Stop bot</button>
-			{/* <OrderUpdateCounter /> */}
+			
 		</div>
 	);
 };

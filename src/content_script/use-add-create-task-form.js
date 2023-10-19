@@ -1,82 +1,47 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { OrderTrackerForm } from './track-order';
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { OrderTrackerForm } from "./track-order";
 import {
-	parseAndValidateOrderData,
-	parseElementOrder,
-	waitForElement
-} from '../shared/lib/dom-scraper';
-import { deleteTaskById } from './delete_task_by_id';
+  parseAndValidateOrderData,
+  findDeepestElementsByText,
+} from "../shared/lib/dom-scraper";
+import { deleteTaskById } from "./delete_task_by_id";
 
 export const useAddCreateTaskForm = async () => {
-	const traversalPath = [
-		{ type: 'parent' },
-		{ type: 'parent' },
-		{ type: 'parent' },
-		{ type: 'parent' },
-		{ type: 'parent' },
-		{ type: 'child', index: 1 },
-		{ type: 'child', index: 0 },
-		{ type: 'child', index: 0 }
-	];
+  try {
+    const elements = await findDeepestElementsByText("div", ["--"]);
 
-	try {
-		const startElement = document.getElementById(
-			'c2c_batchOperation_checkbox_selectAll'
-		);
+    const cols = elements
+      .filter((element) => {
+        if (element.parentElement.parentElement.children.length < 8) {
+          return element;
+        } else {
+          deleteTaskById(
+            element.parentElement.parentElement.children[1].innerText.split(
+              "\n"
+            )[0]
+          );
+        }
+      })
+      .map((e) => e.parentElement.parentElement);
 
-		const htmlElement = await waitForElement(
-			startElement,
-			traversalPath,
-			20000
-		);
+    for (const e of cols) {
+      const parsedDataOrder = parseAndValidateOrderData(
+        e.children[0].innerText,
+        e.children[2].innerText,
+        e.children[3].innerText
+      );
 
-		const [htmlOrders] = [...htmlElement.children].filter(
-			(child, index) => {
-				if (index > 0) {
-					return child;
-				} else return;
-			}
-		);
+      const taskControlForm = document.createElement("div");
+      e.appendChild(taskControlForm);
 
-		for (const startElement of htmlOrders.children) {
-			const htmlColumnsOrder = await waitForElement(
-				startElement,
-				[{ type: 'child', index: 0 }],
-				20000
-			);
+      const root = createRoot(taskControlForm);
+      root.render(<OrderTrackerForm parsedDataOrder={parsedDataOrder} />);
+    }
+  } catch (error) {
+    console.log(error);
+    return;
+  }
 
-			if (htmlColumnsOrder.children[0].innerText === '') {
-				deleteTaskById(
-					parseAndValidateOrderData(
-						htmlColumnsOrder.children[1].innerText,
-						htmlColumnsOrder.children[3].innerText,
-						htmlColumnsOrder.children[4].innerText
-					).id
-				);
-			}
-
-			if (htmlColumnsOrder.children.length < 8) {
-				const parsedDataOrder = parseAndValidateOrderData(
-					htmlColumnsOrder.children[0].innerText,
-					htmlColumnsOrder.children[2].innerText,
-					htmlColumnsOrder.children[3].innerText
-				);
-
-				const taskControlForm = document.createElement('div');
-				htmlColumnsOrder.children[
-					htmlColumnsOrder.children.length - 1
-				].appendChild(taskControlForm);
-				const root = createRoot(taskControlForm);
-				root.render(
-					<OrderTrackerForm parsedDataOrder={parsedDataOrder} />
-				);
-			}
-		}
-	} catch (error) {
-		console.log(error);
-		return;
-	}
-
-	return true;
+  return true;
 };

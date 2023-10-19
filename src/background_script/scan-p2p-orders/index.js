@@ -33,16 +33,20 @@ const convertStringToNumber = str => {
 	return parseFloat(cleanedStr);
 };
 
-let page = 1;
+let pages = {};
 
 export const scanP2pOrders = async () => {
 	if (!Tasks.getStatusUpdatePrice()) {
 		const { priceLimit, beatBy, id, action, pair, amount, banks } =
 			Tasks.getNextTask();
 
+		if (!pages[pair.asset]) {
+				pages[pair.asset] = 1;
+		}
+			 
 		const requestData = {
 			fiat: pair.fiat,
-			page: page,
+			page: pages[pair.asset],
 			rows: 10,
 			tradeType: action,
 			asset: pair.asset,
@@ -57,12 +61,14 @@ export const scanP2pOrders = async () => {
 		const { data: orders } = await fetchTradersOrders(requestData);
 
 		if (!orders.length) {
-			page = 1;
+			pages[pair.asset] = 1;
 		}
 
 		const [existingOrder] = [...orders].filter(
 			(order, index) => order.adv.advNo === id && index === 0
 		);
+
+		console.log({page: pages[pair.asset], asset: pair.asset});
 
 		if (!existingOrder) {
 			while (orders.length) {
@@ -84,16 +90,16 @@ export const scanP2pOrders = async () => {
 						newPrice < priceLimit)
 				) {
 					Tasks.setStatusUpdatePrice(true);
+					pages[pair.asset] = 1;
 					console.log(
 						`Amount: ${amount} Price limit: ${priceLimit} New price: ${newPrice} Last order: ${order}`
 					);
 					editPrice(id, newPrice, 'EDIT_PRICE');
-					page = 1;
+					
 					break;
 				}
 			}
-
-			page++;
-		}
+		} 
+		pages[pair.asset]++;
 	}
 };

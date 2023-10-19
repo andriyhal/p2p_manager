@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	spinner,
 	rotateCw,
@@ -10,19 +10,22 @@ import {
 } from './button.module.css';
 
 export const ControlPanel = () => {
-	const [status, setStatus] = useState('START_BOT');
+	const [status, setStatus] = useState(localStorage.getItem('status') || 'START_BOT');
+
+	useEffect(() => localStorage.setItem('status', status), [status]);
+	
+
 	const handleClick = () => {
 		const isStatus = () => {
 			if (status === 'START_BOT') {
+				setStatus('STOP_BOT');
 				return { action: 'START_BOT', type: 'POPUP' };
 			}
-
+			setStatus('START_BOT');
 			return { action: 'STOP_BOT', type: 'POPUP' };
 		};
 
-		chrome.runtime.sendMessage(isStatus(), response => {
-			setStatus(response.action);
-		});
+		chrome.runtime.sendMessage(isStatus());
 	};
 
 	return (
