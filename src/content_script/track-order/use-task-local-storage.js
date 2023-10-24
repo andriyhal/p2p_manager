@@ -1,42 +1,40 @@
-import { TASKS_INFO_STORAGE_KEY } from '../../shared/config';
-import LocalStorageManager from '../../shared/lib/local-storage-manager';
+import { TASKS_INFO_STORAGE_KEY } from "../../shared/config";
+import LocalStorageManager from "../../shared/lib/local-storage-manager";
 
-function useTaskLocalStorage() {
-	const tasksInfo = new LocalStorageManager(TASKS_INFO_STORAGE_KEY);
+export const taskLocalStorage = () => {
+  const tasksInfo = new LocalStorageManager(TASKS_INFO_STORAGE_KEY);
 
-	const storeTaskAndUpdateIfExists = data => {
-		const existingIndex = tasksInfo
-			.readData()
-			.findIndex(task => task.id === data.id);
+  const storeTaskAndUpdateIfExists = (data) => {
+    const existingIndex = tasksInfo
+      .readData()
+      .findIndex((task) => task.id === data.id);
 
-		if (existingIndex === -1) {
-			tasksInfo.saveData([...tasksInfo.readData(), data]);
-		} else {
-			tasksInfo.saveData(
-				tasksInfo.readData().map(item =>
-					item.id === data.id
-						? {
-								...item,
-								priceLimit: data.priceLimit,
-								beatBy: data.beatBy
-						  }
-						: item
-				)
-			);
-		}
+    if (existingIndex === -1) {
+      tasksInfo.saveData([...tasksInfo.readData(), data]);
+    } else {
+      tasksInfo.saveData(
+        tasksInfo.readData().map((item) =>
+          item.id === data.id
+            ? {
+                ...item,
+                percentLimit: data.percentLimit,
+                beatBy: data.beatBy,
+              }
+            : item
+        )
+      );
+    }
 
-		return tasksInfo.readData().filter(task => task.id === data.id);
-	};
+    return tasksInfo.readData().filter((task) => task.id === data.id);
+  };
 
-	const isTaskStored = orderId => {
-		const storedTasks = tasksInfo.readData() || [];
-		return !!storedTasks.find(task => task.id === orderId);
-	};
+  const isTaskStored = (orderId) => {
+    const storedTasks = tasksInfo.readData() || [];
+    return !!storedTasks.find((task) => task.id === orderId);
+  };
 
-	return {
-		storeTaskAndUpdateIfExists,
-		isTaskStored
-	};
-}
-
-export default useTaskLocalStorage;
+  return {
+    storeTaskAndUpdateIfExists,
+    isTaskStored,
+  };
+};

@@ -1,19 +1,19 @@
 import { TASKS_INFO_STORAGE_KEY } from "../../shared/config";
 import LocalStorageManager from "../../shared/lib/local-storage-manager";
-import useTaskLocalStorage from "./use-task-local-storage";
+import { taskLocalStorage } from "./use-task-local-storage";
 
 const tasksInfo = new LocalStorageManager(TASKS_INFO_STORAGE_KEY);
 
 export const handleSaveTaskToLocalStorage = (submitData, props) => {
-  const { storeTaskAndUpdateIfExists } = useTaskLocalStorage();
-  let stringWithoutCommasPriceLimit;
-  let parsedNumberPriceLimit = submitData.priceLimit;
+  const { storeTaskAndUpdateIfExists } = taskLocalStorage();
+  let stringWithoutCommasPercentLimit;
+  let parsedNumberPercentLimit = submitData.percentLimit;
   let stringWithoutCommasBeatBy;
   let parsedNumberBeatBy = submitData.beatBy;
 
-  if (typeof submitData.priceLimit === "string") {
-    stringWithoutCommasPriceLimit = submitData.priceLimit.replace(/,/g, "");
-    parsedNumberPriceLimit = parseFloat(stringWithoutCommasPriceLimit);
+  if (typeof submitData.percentLimit === "string") {
+    stringWithoutCommasPercentLimit = submitData.percentLimit.replace(/,/g, "");
+    parsedNumberPercentLimit = parseFloat(stringWithoutCommasPercentLimit);
   }
 
   if (typeof submitData.beatBy === "string") {
@@ -22,7 +22,7 @@ export const handleSaveTaskToLocalStorage = (submitData, props) => {
   }
 
   storeTaskAndUpdateIfExists({
-    priceLimit: parsedNumberPriceLimit,
+    percentLimit: parsedNumberPercentLimit,
     beatBy: parsedNumberBeatBy,
     ...props,
   });
