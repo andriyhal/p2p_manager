@@ -38,7 +38,8 @@ export class Tasks {
 
 	static getNextTask() {
 		if (tasksInfo.length === 0) {
-			throw new Error('No tasks available');
+			console.log('No tasks available');
+			return;
 		}
 
 		const task = tasksInfo[Tasks.currentIndex];

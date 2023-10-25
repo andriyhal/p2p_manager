@@ -1,4 +1,3 @@
-//get_task.js
 export const getTasks = action => {
 	const url = 'https://p2p.binance.com/en/myads?type=normal&code=default';
 

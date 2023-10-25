@@ -10,22 +10,23 @@ import {
 } from './button.module.css';
 
 export const ControlPanel = () => {
-	const [status, setStatus] = useState(localStorage.getItem('status') || 'START_BOT');
+	const [status, setStatus] = useState(
+		localStorage.getItem('status') || 'START_BOT'
+	);
 
 	useEffect(() => localStorage.setItem('status', status), [status]);
-	
 
 	const handleClick = () => {
-		const isStatus = () => {
-			if (status === 'START_BOT') {
-				setStatus('STOP_BOT');
-				return { action: 'START_BOT', type: 'POPUP' };
-			}
+		if (status === 'START_BOT') {
+			setStatus('STOP_BOT');
+			chrome.runtime.sendMessage({
+				action: 'START_BOT',
+				type: 'POPUP'
+			});
+		} else {
 			setStatus('START_BOT');
-			return { action: 'STOP_BOT', type: 'POPUP' };
-		};
-
-		chrome.runtime.sendMessage(isStatus());
+			chrome.runtime.sendMessage({ action: 'STOP_BOT', type: 'POPUP' });
+		}
 	};
 
 	return (
