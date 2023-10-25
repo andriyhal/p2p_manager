@@ -74,13 +74,13 @@ export const getConfirmToPostButton = () =>
 
 export const parseAndValidateOrderData = (
 	idAndAction,
-	amountAndCurrency,
+	p2pPriceAndCurrency,
 	banks
 ) => {
 	const [id, actionString, pairString] = idAndAction.split('\n');
 
 	let action = actionString.trim().toUpperCase();
-	if (['КУПІВЛЯ', 'ПОКУПКА', 'BUY'].includes(action)) {
+	if (['КУПІВЛЯ', 'КУПИТЬ', 'BUY'].includes(action)) {
 		action = 'SELL';
 	} else if (['ПРОДАЖ', 'ПРОДАТЬ', 'SELL'].includes(action)) {
 		action = 'BUY';
@@ -90,8 +90,8 @@ export const parseAndValidateOrderData = (
 
 	const [asset, fiat] = pairString.split('/').map(s => s.trim());
 
-	const amountString = amountAndCurrency.replace(/[^0-9.]/g, '');
-	const amount = parseFloat(amountString);
+	const p2pPriceString = p2pPriceAndCurrency.replace(/[^0-9.]/g, '');
+	const p2pPrice = parseFloat(p2pPriceString);
 
 	const banksArray = banks
 		.split('\n')
@@ -109,9 +109,96 @@ export const parseAndValidateOrderData = (
 			fiat,
 			asset
 		},
-		amount: amount,
+		p2pPrice: p2pPrice,
 		banks: banksArray
 	};
+};
+
+export const findButtonByText = (textArray, timeout = 5000, interval = 100) => {
+	return new Promise((resolve, reject) => {
+		const startTime = Date.now();
+
+		const checkButton = () => {
+			const buttons = document.querySelectorAll('button');
+
+			for (let button of buttons) {
+				for (let text of textArray) {
+					if (button.textContent.trim().includes(text.trim())) {
+						console.log('Button found:', button);
+						resolve(button);
+						return;
+					}
+				}
+			}
+
+			if (Date.now() - startTime > timeout) {
+				console.log('Button not found');
+				reject(new Error('Timeout exceeded'));
+				return;
+			}
+
+			setTimeout(checkButton, interval);
+		};
+
+		checkButton();
+	});
+};
+
+export const findDeepestElementsByText = (
+	selector,
+	textArray,
+	timeout = 5000,
+	interval = 100,
+	caseSensitive = false
+) => {
+	return new Promise((resolve, reject) => {
+		const startTime = Date.now();
+
+		const checkElement = () => {
+			const elements = document.querySelectorAll(selector);
+			let foundElements = [];
+
+			for (let element of elements) {
+				for (let text of textArray) {
+					const elementText = caseSensitive
+						? element.textContent.trim()
+						: element.textContent.trim().toLowerCase();
+					const searchText = caseSensitive
+						? text.trim()
+						: text.trim().toLowerCase();
+
+					if (elementText.includes(searchText)) {
+						let childHasSameText = Array.from(
+							element.children
+						).some(child => {
+							const childText = caseSensitive
+								? child.textContent.trim()
+								: child.textContent.trim().toLowerCase();
+							return childText.includes(searchText);
+						});
+
+						if (!childHasSameText) {
+							foundElements.push(element);
+						}
+					}
+				}
+			}
+
+			if (foundElements.length > 0 || Date.now() - startTime > timeout) {
+				if (foundElements.length > 0) {
+					resolve(foundElements);
+				} else {
+					console.log('No elements found');
+					reject(new Error('Timeout exceeded'));
+				}
+				return;
+			}
+
+			setTimeout(checkElement, interval);
+		};
+
+		checkElement();
+	});
 };
 
 const waitForChildElement = (parent, index, timeout = 3000) => {
