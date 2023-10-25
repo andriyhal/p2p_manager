@@ -29,9 +29,9 @@ const FinalPriceLabel = styled("h5")`
 `;
 
 
-const PercentageModifier = ({spotPrice, p2pPrice, onChange}) => {
+const PercentageModifier = ({spotPrice, p2pPrice, onChange, value}) => {
     const [percentage, setPercentage] = useState(
-        calculatePercentageFromSpot({spotPrice, p2pPrice})
+        calculatePercentageFromSpot({spotPrice, p2pPrice}) || value
     );
 
     const handlePercentageChange = useCallback(event => {
@@ -63,7 +63,7 @@ const PercentageModifier = ({spotPrice, p2pPrice, onChange}) => {
                 type='number'
                 size='small'
                 label='Percentage'
-                value={percentage.toFixed(2)}
+                value={percentage}
                 onChange={handlePercentageChange}
                 style={textFieldStyle}
                 InputProps={{
@@ -90,7 +90,7 @@ export const FormPercentageModifier = ({
             name={name}
             control={control}
             defaultValue={defaultValue}
-            render={({field: {onChange}, fieldState: {error}}) => (
+            render={({field: {onChange, value}, fieldState: {error}}) => (
                 <PercentageModifier
                     spotPrice={spotPrice}
                     p2pPrice={p2pPrice}
@@ -98,6 +98,7 @@ export const FormPercentageModifier = ({
                     size='small'
                     error={!!error}
                     onChange={onChange}
+                    value={value}
                     fullWidth
                     label={label}
                     variant='outlined'
