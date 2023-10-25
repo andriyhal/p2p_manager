@@ -32,7 +32,7 @@ export const useAddCreateTaskForm = async () => {
 				e.children[2].innerText,
 				e.children[3].innerText
 			);
-			console.log('work', spotAssetPrice);
+
 			const spotAssetPrice = await getAssetPrice(
 				parsedDataOrder.pair.fiat,
 				parsedDataOrder.pair.asset
@@ -40,7 +40,7 @@ export const useAddCreateTaskForm = async () => {
 
 			await new Promise(res => setTimeout(res, 500));
 
-			parsedDataOrder['spotPrice'] = spotAssetPrice.replace(/,/g, '');
+			parsedDataOrder['spotPrice'] = spotAssetPrice;
 
 			const taskControlForm = document.createElement('div');
 			e.appendChild(taskControlForm);
