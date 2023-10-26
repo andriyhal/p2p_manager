@@ -3,13 +3,9 @@ import { useAddCreateTaskForm } from '../use-add-create-task-form';
 import { postOrder } from '../edit-order-price';
 import { getCurrentPath } from '../../shared/lib/dom-scraper';
 import { unlockOrder } from '../../shared/lib/order-locker';
-import { delayedTaskRunner } from '../../shared/lib/delayed-task-runner';
-import { OrderUpdateCounter } from '../OrderUpdateCounter';
 import { updateP2pPriceById } from '../update-p2p-price-by-id';
 
 const App = () => {
-	const taskRunner = delayedTaskRunner(1000);
-
 	const init = async () => {
 		const result = await useAddCreateTaskForm();
 		if (result) {

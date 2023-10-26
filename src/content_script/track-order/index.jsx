@@ -57,6 +57,7 @@ export const OrderTrackerForm = ({ parsedDataOrder }) => {
 						orderId={parsedDataOrder.id}
 						spotPrice={parsedDataOrder.spotPrice}
 						p2pPrice={parsedDataOrder.p2pPrice}
+						orderType={parsedDataOrder.action}
 					/>
 				</div>
 				<div style={{ display: 'flex', gap: '5px' }}>

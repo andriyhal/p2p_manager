@@ -24,7 +24,7 @@ export const handleSaveTaskToLocalStorage = (submitData, props) => {
 	storeTaskAndUpdateIfExists({
 		percentage: parsedNumberPercentage,
 		beatBy: parsedNumberBeatBy,
-		isMerchant: submitData.isMerchant,
+		isMerchant: submitData.isMerchant ? 'merchant' : null,
 		...props
 	});
 };

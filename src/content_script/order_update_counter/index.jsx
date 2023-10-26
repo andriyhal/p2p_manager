@@ -1,7 +1,7 @@
 // OrderEditor.js
 import React from 'react';
 import { useOrderUpdateTracker } from '../use-order-update-tracker';
-import { OrderItem } from './OrderItem';
+import { OrderItem } from './order_item';
 
 const styles = {
 	editor: {

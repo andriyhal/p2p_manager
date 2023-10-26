@@ -148,7 +148,7 @@ export const findDeepestElementsByText = (
 	selector,
 	textArray,
 	timeout = 5000,
-	interval = 100,
+	interval = 10,
 	caseSensitive = false
 ) => {
 	return new Promise((resolve, reject) => {

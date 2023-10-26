@@ -18,7 +18,7 @@ export const taskLocalStorage = () => {
 						? {
 								...item,
 								percentage: data.percentage,
-								isMerchant: data.isMerchant,
+								isMerchant: data.isMerchant ? 'merchant' : null,
 								beatBy: data.beatBy
 						  }
 						: item
