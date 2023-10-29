@@ -18,7 +18,6 @@ const FormControlLabelStyled = styled(FormControlLabel)({
 });
 
 export const CheckBox = ({ label, name, defaultValue, ...props }) => {
-	console.log(defaultValue);
 	return (
 		<Controller
 			name={name}

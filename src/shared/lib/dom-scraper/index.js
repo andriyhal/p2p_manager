@@ -93,14 +93,7 @@ export const parseAndValidateOrderData = (
 	const p2pPriceString = p2pPriceAndCurrency.replace(/[^0-9.]/g, '');
 	const p2pPrice = parseFloat(p2pPriceString);
 
-	const banksArray = banks
-		.split('\n')
-		.map(bank => bank.trim())
-		.filter(bank => {
-			if (getBankId(bank)) {
-				return getBankId(bank);
-			} else return;
-		});
+	const banksArray = banks.split('\n').map(bank => getBankId(bank));
 
 	return {
 		id: id.trim(),

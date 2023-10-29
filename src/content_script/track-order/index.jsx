@@ -11,6 +11,7 @@ import {
 } from './task-event-handlers';
 import { FormInputsGroup } from './FormInputsGroup';
 import { updateP2pPriceById } from '../update-p2p-price-by-id';
+import { useIdManagerForUnmount } from '../use_id_manager_for_unmount';
 
 const FormContainer = styled('form')({
 	position: 'absolute',
@@ -27,19 +28,56 @@ const OrderTrackerFormContainer = styled('div')({
 	justifyContent: 'space-between'
 });
 
+const setPostMessage = id => {
+	const tasksInfo = JSON.parse(localStorage.getItem('tasksInfo'));
+	const task = tasksInfo.find(task => task.id === id);
+	if (task) {
+		chrome.runtime.sendMessage(
+			{
+				action: 'ADD_TASK',
+				type: 'CONTENT',
+				task
+			},
+			response => {
+				console.log(response);
+			}
+		);
+	}
+};
+
 export const OrderTrackerForm = ({ parsedDataOrder }) => {
 	const { control, handleSubmit } = useForm();
 	const { isTaskStored } = taskLocalStorage();
 	const [isTask, setIsTask] = useState(isTaskStored(parsedDataOrder.id));
 
+	const { addId } = useIdManagerForUnmount();
+
+	useEffect(() => {
+		setPostMessage(parsedDataOrder.id);
+		addId(parsedDataOrder.id);
+	}, []);
+
 	const handleSaveTask = submitData => {
-		console.log(submitData);
 		handleSaveTaskToLocalStorage(submitData, parsedDataOrder);
 		setIsTask(isTaskStored(parsedDataOrder.id));
+
+		setTimeout(() => setPostMessage(parsedDataOrder.id), 1000);
 	};
 
 	const handleDelete = () => {
 		handleDeleteTask(parsedDataOrder);
+
+		chrome.runtime.sendMessage(
+			{
+				action: 'DELETE_TASK',
+				type: 'CONTENT',
+				taskId: parsedDataOrder.id
+			},
+			response => {
+				console.log(response);
+			}
+		);
+
 		setIsTask(isTaskStored(parsedDataOrder.id));
 	};
 

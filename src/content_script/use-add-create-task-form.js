@@ -45,8 +45,14 @@ export const useAddCreateTaskForm = async () => {
 			const taskControlForm = document.createElement('div');
 			e.appendChild(taskControlForm);
 
-			const root = createRoot(taskControlForm);
-			root.render(<OrderTrackerForm parsedDataOrder={parsedDataOrder} />);
+			const taskFormId = document.getElementById(parsedDataOrder.id);
+
+			if (!taskFormId) {
+				const root = createRoot(taskControlForm);
+				root.render(
+					<OrderTrackerForm parsedDataOrder={parsedDataOrder} />
+				);
+			}
 		}
 	} catch (error) {
 		console.log(error);

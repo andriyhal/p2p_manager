@@ -9,7 +9,7 @@ let pages = {};
 
 export const scanP2pOrders = async () => {
 	const nextTask = Tasks.getNextTask();
-	console.log(Math.random(4));
+	let date = new Date(2011, 0, 1, 2, 3, 4, 567);
 	if (!Tasks.getStatusUpdatePrice() && nextTask) {
 		const {
 			percentage,

@@ -6,7 +6,6 @@ const runner = delayedTaskRunner(1000);
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.action === 'START_BOT') {
-		getTasks(message.action);
 		runner.start(scanP2pOrders);
 	}
 
@@ -14,8 +13,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		runner.stop();
 	}
 
-	if (message.action === 'UPDATE_TASKSINFO') {
-		getTasks(message.action);
+	if (message.action === 'ADD_TASK') {
+		Tasks.addTask(message.task);
+		sendResponse({
+			result: 'Task add in background script',
+			tasks: Tasks.getList()
+		});
 	}
 
 	if (message.action === 'CLOSE_WINDOW') {
@@ -32,5 +35,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			console.log(`Close window,`, message);
 			chrome.windows.remove(message.windowId);
 		}, 1000);
+	}
+
+	if (message.action === 'DELETE_TASK') {
+		console.log('DELETE_TASK', message.taskId, Tasks.getList());
+		Tasks.deleteTask(message.taskId);
+		console.log('DELETE_TASK', message.taskId, Tasks.getList());
+		sendResponse({
+			result: 'Task deleted in background script',
+			tasks: Tasks.getList()
+		});
 	}
 });

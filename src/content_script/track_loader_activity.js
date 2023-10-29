@@ -1,4 +1,5 @@
 import { observeElementMutations } from '../shared/lib/observe_element_mutations';
+import { unmountTaskForms } from './unmount_task_form';
 import { useAddCreateTaskForm } from './use-add-create-task-form';
 
 const observerOptions = {
@@ -22,7 +23,10 @@ const isLoader = element => {
 const callback = async (mutationsList, observer) => {
 	for (let mutation of mutationsList) {
 		if (mutation.type === 'childList') {
-			// mutation.addedNodes
+			if (isLoader(mutation.addedNodes[0])) {
+				unmountTaskForms();
+			}
+
 			if (isLoader(mutation.removedNodes[0])) {
 				await useAddCreateTaskForm();
 			}
@@ -40,7 +44,7 @@ const traversalPath = [
 	{ type: 'child', index: 0 }
 ];
 
-export const trackOrderActivity = () =>
+export const trackLoaderActivity = () =>
 	observeElementMutations(
 		startElement,
 		traversalPath,
