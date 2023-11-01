@@ -1,7 +1,10 @@
 import { findButtonByText, getInputEditPrice } from "../shared/lib/dom-scraper";
 
 export const postOrder = async (newPrice) => {
+  console.log("edit price");
   const priceInputElement = await getInputEditPrice();
+
+  console.log("price input element", priceInputElement);
 
   const lastValue = priceInputElement.value;
   priceInputElement.value = newPrice;

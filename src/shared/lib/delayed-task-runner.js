@@ -1,26 +1,24 @@
-export const delayedTaskRunner = sleep => {
-	let terminate = false;
+export const delayedTaskRunner = (sleep) => {
+  let terminate = false;
 
-	const start = async callback => {
-		// Сделайте эту функцию асинхронной
-		const update = async () => {
-			// Сделайте эту функцию асинхронной
-			if (!terminate) {
-				await new Promise(res => setTimeout(res, sleep)); // Дождитесь окончания тайм-аута
-				if (!terminate) {
-					await callback(); // Дождитесь завершения callback
-					await update(); // Рекурсивно вызовите update, дождавшись его завершения
-				}
-			}
-		};
+  const start = async (callback) => {
+    const update = async () => {
+      if (!terminate) {
+        await new Promise((res) => setTimeout(res, sleep));
+        if (!terminate) {
+          await callback();
+          await update();
+        }
+      }
+    };
 
-		terminate = false;
-		await update(); // Дождитесь завершения update
-	};
+    terminate = false;
+    await update();
+  };
 
-	const stop = () => {
-		terminate = true;
-	};
+  const stop = () => {
+    terminate = true;
+  };
 
-	return { start, stop };
+  return { start, stop };
 };

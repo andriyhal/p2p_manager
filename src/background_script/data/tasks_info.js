@@ -1,58 +1,71 @@
-const tasksInfo = [];
+let tasksInfo = [];
 let currentTask = {};
 let statusUpdatePrice = false;
 
 export class Tasks {
-	static currentIndex = 0; // переменная для отслеживания текущего индекса
+  static currentIndex = 0;
 
-	static getList() {
-		return tasksInfo;
-	}
+  static getList() {
+    return tasksInfo;
+  }
 
-	static addTask(item) {
-		if (!item || !item.id) {
-			throw new Error('Task is missing an id');
-		}
+  static addTask(task) {
+    chrome.storage.local.get(["tasksInfo"], (result) => {
+      tasksInfo = result.tasksInfo || [];
+      const index = tasksInfo.findIndex(
+        (existingTask) => existingTask.id === task.id
+      );
 
-		const index = tasksInfo.findIndex(task => task.id === item.id);
+      if (index !== -1) {
+        tasksInfo[index] = task;
+      } else {
+        tasksInfo.push(task);
+      }
 
-		if (index !== -1) {
-			tasksInfo[index] = item;
-		} else {
-			tasksInfo.push(item);
-		}
-	}
+      chrome.storage.local.set({ tasksInfo }, () => {
+        console.log("Task saved", tasksInfo);
+      });
+    });
+  }
 
-	static deleteTask(id) {
-		if (!id) {
-			throw new Error('An id must be provided');
-		}
+  static deleteTask(id) {
+    if (!id) {
+      throw new Error("An id must be provided");
+    }
 
-		const index = tasksInfo.findIndex(task => task.id === id);
-		if (index !== -1) {
-			tasksInfo.splice(index, 1);
-		} else {
-			throw new Error('No task found with the provided id');
-		}
-	}
+    const index = tasksInfo.findIndex((task) => task.id === id);
+    if (index !== -1) {
+      tasksInfo.splice(index, 1);
+    } else {
+      throw new Error("No task found with the provided id");
+    }
 
-	static getNextTask() {
-		if (tasksInfo.length === 0) {
-			console.log('No tasks available');
-			return;
-		}
+    chrome.storage.local.set({ tasksInfo }, () => {
+      console.log("Task deleted", tasksInfo);
+    });
+  }
 
-		const task = tasksInfo[Tasks.currentIndex];
-		Tasks.currentIndex = (Tasks.currentIndex + 1) % tasksInfo.length;
+  static getNextTask() {
+    chrome.storage.local.get(["tasksInfo"], (result) => {
+      tasksInfo = result.tasksInfo || [];
+    });
 
-		return task;
-	}
+    if (tasksInfo.length === 0) {
+      console.log("No tasks available");
+      return;
+    }
 
-	static setStatusUpdatePrice(value = false) {
-		statusUpdatePrice = value;
-	}
+    const task = tasksInfo[Tasks.currentIndex];
+    Tasks.currentIndex = (Tasks.currentIndex + 1) % tasksInfo.length;
 
-	static getStatusUpdatePrice() {
-		return statusUpdatePrice;
-	}
+    return task;
+  }
+
+  static setStatusUpdatePrice(value = false) {
+    statusUpdatePrice = value;
+  }
+
+  static getStatusUpdatePrice() {
+    return statusUpdatePrice;
+  }
 }
